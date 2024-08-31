@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'nutrition.dart'; // Import nutrition.dart
-import 'foodscanner.dart'; // Import foodscanner.dart
+import 'foodScan/foodScanner.dart'; // Import foodscanner.dart
 
 class HealthSummaryPage extends StatelessWidget {
   final String heartRate;
