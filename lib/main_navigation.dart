@@ -23,8 +23,8 @@ class _MainNavigationState extends State<MainNavigation> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      const MyHomePage(),
-      Together(),
+      const HomePage(),
+      const Together(),
       const Center(),
       Fitness(),
       Profile(),

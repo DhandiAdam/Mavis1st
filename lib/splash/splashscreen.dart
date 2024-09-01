@@ -1,6 +1,6 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:mavis/home/home.dart';
+import 'package:mavis/main_navigation.dart';
 
 class MySplash extends StatefulWidget {
   const MySplash({super.key});
@@ -14,20 +14,13 @@ class _MySplashState extends State<MySplash> {
   Widget build(BuildContext context) {
     return FlutterSplashScreen.fadeIn(
       backgroundColor: Colors.white,
-      onInit: () {
-        debugPrint("On Init");
-      },
-      onEnd: () {
-        debugPrint("On End");
-      },
       childWidget: SizedBox(
         height: 200,
         width: 200,
         child: Image.asset("assets/mavis.png"), // Pastikan path ini benar
       ),
-      onAnimationEnd: () => debugPrint("On Fade In End"),
       nextScreen:
-          const MyHomePage(), // Pastikan MyHomePage didefinisikan di tempat lain
+          const MainNavigation(), // Ganti MyHomePage menjadi MainNavigation
     );
   }
 }

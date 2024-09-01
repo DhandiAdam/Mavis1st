@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mavis/main_navigation.dart'; // Import MainNavigation widget
+import 'package:mavis/main_navigation.dart';
+import 'package:mavis/splash/splashscreen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Mavis',
-      home: MainNavigation(), // Set MainNavigation as the home widget
+      home: MySplash(),
       debugShowCheckedModeBanner: false,
     );
   }
