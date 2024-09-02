@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mavis/home/home.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mavis/together/together.dart';
-import 'package:mavis/fitness/fitness.dart';
+import 'package:mavis/notifications/notifications.dart';
 import 'package:mavis/profile/profile.dart';
 import 'package:mavis/foodScan/foodScanner.dart';
 import 'package:mavis/constants/colors.dart';
@@ -23,10 +23,10 @@ class _MainNavigationState extends State<MainNavigation> {
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      const HomePage(),
+      HomePage(),
       const Together(),
       const Center(),
-      Fitness(),
+      Notifications(),
       Profile(),
     ];
   }
@@ -41,7 +41,7 @@ class _MainNavigationState extends State<MainNavigation> {
       bottomNavigationBar: Container(
         height: Theme.of(context).platform == TargetPlatform.iOS ? 90 : 72,
         decoration: BoxDecoration(
-          color: AppColors.primary,
+          color: AppColors.white,
           boxShadow: [
             BoxShadow(
               color: AppColors.gray700,
@@ -56,14 +56,14 @@ class _MainNavigationState extends State<MainNavigation> {
           child: BottomNavigationBar(
             currentIndex: _selectedIndex,
             key: const Key('bottomNavigationBar'),
-            backgroundColor: AppColors.navigation,
-            selectedItemColor: AppColors.primary,
+            backgroundColor: AppColors.white,
+            selectedItemColor: AppColors.baseColor3,
             unselectedItemColor: AppColors.gray300,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 11,
-              color: AppColors.primary,
+              color: AppColors.baseColor1,
             ),
             unselectedLabelStyle: const TextStyle(
               fontWeight: FontWeight.w400,
@@ -77,14 +77,14 @@ class _MainNavigationState extends State<MainNavigation> {
             },
             items: [
               BottomNavigationBarItem(
-                label: 'Home',
+                label: '',
                 icon: icon('home'),
-                activeIcon: icon('home-black'),
+                activeIcon: icon('home-active'),
               ),
               BottomNavigationBarItem(
-                label: 'Together',
-                icon: icon('flag'),
-                activeIcon: icon('flag-black'),
+                label: '',
+                icon: icon('clock'),
+                activeIcon: icon('clock-active'),
               ),
               const BottomNavigationBarItem(
                 label: '',
@@ -93,14 +93,14 @@ class _MainNavigationState extends State<MainNavigation> {
                 ),
               ),
               BottomNavigationBarItem(
-                label: 'Fitness',
-                icon: icon('fitness'),
-                activeIcon: icon('fitness-black'),
+                label: '',
+                icon: icon('notification'),
+                activeIcon: icon('notification-active'),
               ),
               BottomNavigationBarItem(
-                label: 'Profile',
+                label: '',
                 icon: icon('user'),
-                activeIcon: icon('user-black'),
+                activeIcon: icon('user-active'),
               ),
             ],
           ),

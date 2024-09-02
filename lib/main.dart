@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mavis/main_navigation.dart';
 import 'package:mavis/splash/splashscreen.dart';
 
 void main() {

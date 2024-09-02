@@ -4,8 +4,8 @@ import 'package:mavis/constants/colors.dart';
 LinearGradient appGradient() {
   return const LinearGradient(
     colors: [
-      AppColors.scanButton,
-      AppColors.scanButton,
+      AppColors.gradient1,
+      AppColors.gradient2,
     ],
     begin: FractionalOffset(0, 0),
     end: FractionalOffset(2.5, 0),
