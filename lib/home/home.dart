@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0),
                 child: Text(
                   'Activity Status',
                   style: TextStyle(

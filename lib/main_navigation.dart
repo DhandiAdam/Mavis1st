@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mavis/together/together.dart';
 import 'package:mavis/notifications/notifications.dart';
 import 'package:mavis/profile/profile.dart';
-import 'package:mavis/foodScan/foodScanner.dart';
+import 'package:mavis/Scanner/scanner.dart';
 import 'package:mavis/constants/colors.dart';
 import 'package:mavis/styles/style.dart';
 
@@ -129,7 +129,7 @@ class _MainNavigationState extends State<MainNavigation> {
                   showDialog(
                     barrierDismissible: true,
                     context: context,
-                    builder: (_) => const FoodScannerPage(),
+                    builder: (_) => const Scanner(),
                   );
                 },
                 elevation: 0,

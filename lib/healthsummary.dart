@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'nutrition.dart'; // Import nutrition.dart
-import 'foodScan/foodScanner.dart'; // Import foodscanner.dart
+import 'nutrition/nutrition.dart';
+import 'Scanner/scanner.dart';
 
 class HealthSummaryPage extends StatelessWidget {
   final String heartRate;
@@ -104,7 +104,7 @@ class HealthSummaryPage extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const FoodScannerPage(),
+                          builder: (context) => const Scanner(),
                         ),
                       );
                     },
