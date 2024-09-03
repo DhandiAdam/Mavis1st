@@ -45,7 +45,7 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
                 child: Text(
                   'Activity Status',
                   style: TextStyle(
@@ -56,13 +56,9 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                  child: Image.asset(
-                    'assets/icons/Status.png',
-                    width: 350,
-                    height: 350,
-                  ),
+                child: Image.asset(
+                  'assets/icons/Status.png',
+                  fit: BoxFit.contain,
                 ),
               ),
               Row(
