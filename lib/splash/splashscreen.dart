@@ -17,10 +17,9 @@ class _MySplashState extends State<MySplash> {
       childWidget: SizedBox(
         height: 200,
         width: 200,
-        child: Image.asset("assets/mavis.png"), // Pastikan path ini benar
+        child: Image.asset("assets/mavis.png"),
       ),
-      nextScreen:
-          const MainNavigation(), // Ganti MyHomePage menjadi MainNavigation
+      nextScreen: const MainNavigation(),
     );
   }
 }

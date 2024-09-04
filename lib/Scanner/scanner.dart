@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:mavis/constants/colors.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mavis/nutrition/nutrition.dart';
-import 'package:mavis/styles/style.dart';
 import 'dart:async';
 
 class Scanner extends StatefulWidget {
@@ -68,8 +66,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
       appBar: AppBar(
         title: const Padding(
           padding: EdgeInsets.all(8.0),
-          child: Text('Identify the food',
-              textAlign: TextAlign.center), // Membuat judul di tengah
+          child: Text('Identify the food', textAlign: TextAlign.center),
         ),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
@@ -88,7 +85,6 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
           Positioned.fill(
             child: CameraPreview(_cameraController!),
           ),
-          // Overlay for the scanner
           Align(
             alignment: Alignment.center,
             child: Container(
@@ -152,62 +148,261 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
   }
 
   void _showFoodInfo(BuildContext context, String imagePath) {
+    const String canEatText = 'You can eat this!';
+    const String mainFoodName = 'Rice';
+    const String descriptionContent =
+        'Rice is uncooked rice that has been cooked by boiling or steaming. The process of boiling or steaming rice is also known as cooking. Cooking is necessary to enhance the aroma of the rice and make it softer while maintaining its consistency.';
+    const String nutritionTitle = 'nasi putih';
+
+    final List<Map<String, String>> nutritionInfo = [
+      {
+        'label': 'Carbohydrate',
+        'value': '39.8 g / 100 g',
+        'icon': 'Icons.fastfood',
+        'color': 'Colors.green',
+      },
+      {
+        'label': 'Lemak',
+        'value': '0.3 g / 100 g',
+        'icon': 'Icons.water_drop_outlined',
+        'color': 'Colors.blue',
+      },
+      {
+        'label': 'Protein',
+        'value': '3 g / 100 g',
+        'icon': 'Icons.wb_sunny_outlined',
+        'color': 'Colors.orangeAccent',
+      },
+    ];
+
+    final List<Map<String, String>> aliasNameInfo = [
+      {
+        'label': 'Fried Rice',
+      },
+      {
+        'label': 'Rice',
+      },
+      {
+        'label': 'Oryza Sativa',
+      },
+    ];
+
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
       builder: (context) {
-        return Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Food Information',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              _buildInfoRow(label: 'Food', value: 'Rice'),
-              _buildInfoRow(label: 'Sugar', value: '0.1 g/100g'),
-              _buildInfoRow(label: 'Calories', value: '130 kcal/100g'),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Assuming NutritionPage exists and uses foodItems as a parameter
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => NutritionPage(
-                        foodItems: [
-                          {
-                            'imagePath': imagePath, // Pass the image path
-                            'name': 'Rice', // Food name
-                            'sugar': '0.1', // Sugar value
-                            'calories': '130', // Calories value
-                          },
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          minChildSize: 0.5,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 100,
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    const Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.check_outlined,
+                            color: AppColors.baseColor1,
+                            size: 20,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            canEatText,
+                            style: TextStyle(
+                              color: AppColors.baseColor1,
+                              fontSize: 16,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ],
                       ),
                     ),
-                  );
-                },
-                child: const Text('Simpan'),
+                    const SizedBox(height: 10),
+                    const Center(
+                      child: Text(
+                        mainFoodName,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: aliasNameInfo.map((info) {
+                        return _buildTagChip(info['label']!);
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Description',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      descriptionContent,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'From Nilai Gizi, Kandungan gizi $nutritionTitle',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.gray600,
+                      ),
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: nutritionInfo.map((info) {
+                        return _buildNutritionInfo(
+                          icon: _getIconFromString(info['icon']!),
+                          label: info['label']!,
+                          value: info['value']!,
+                          color: _getColorFromString(info['color']!),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 30),
+                    Center(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: AppColors.baseColor4,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 20.0),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NutritionPage(
+                                foodItems: [
+                                  {
+                                    'imagePath': imagePath,
+                                    'name': 'Rice',
+                                    'sugar': '0.1',
+                                    'calories': '130',
+                                  },
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.bookmark_outline, size: 20),
+                            SizedBox(width: 8),
+                            Text('Save what you eat!',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                )),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
+            );
+          },
         );
       },
+    );
+  }
+
+  IconData _getIconFromString(String iconName) {
+    switch (iconName) {
+      case 'Icons.fastfood':
+        return Icons.fastfood;
+      case 'Icons.water_drop_outlined':
+        return Icons.water_drop_outlined;
+      case 'Icons.wb_sunny_outlined':
+        return Icons.wb_sunny_outlined;
+      default:
+        return Icons.dehaze_outlined;
+    }
+  }
+
+  Color _getColorFromString(String colorString) {
+    switch (colorString) {
+      case 'Colors.green':
+        return AppColors.baseColor1;
+      case 'Colors.blue':
+        return Colors.blue;
+      case 'Colors.orangeAccent':
+        return Colors.orangeAccent;
+      default:
+        return AppColors.baseColor1;
+    }
+  }
+
+  Widget _buildTagChip(String label) {
+    return Chip(
+      label: Text(
+        label,
+        style: const TextStyle(color: Colors.black45),
+      ),
+      backgroundColor: AppColors.gray300,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: Colors.transparent),
+      ),
+    );
+  }
+
+  Widget _buildNutritionInfo({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Column(
+      children: [
+        Icon(icon, color: color),
+        const SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(
+            color: color,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        Text(value, style: const TextStyle(fontSize: 14)),
+      ],
     );
   }
 

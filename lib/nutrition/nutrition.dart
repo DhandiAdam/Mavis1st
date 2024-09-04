@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mavis/main_navigation.dart';
 
 class NutritionPage extends StatefulWidget {
   final List<Map<String, String>>
@@ -16,7 +17,6 @@ class NutritionPage extends StatefulWidget {
 class NutritionPageState extends State<NutritionPage> {
   @override
   Widget build(BuildContext context) {
-    // Calculate total sugar and calories
     final totalSugar = _calculateTotalSugar();
     final totalCalories = _calculateTotalCalories();
 
@@ -25,6 +25,17 @@ class NutritionPageState extends State<NutritionPage> {
         title: const Text('Nutrition'),
         backgroundColor: Colors.teal,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MainNavigation(),
+              ),
+            );
+          },
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -35,11 +46,11 @@ class NutritionPageState extends State<NutritionPage> {
               children: [
                 _buildContainer(
                   title: 'Total Sugar',
-                  value: '$totalSugar g', // Display total sugar
+                  value: '$totalSugar g',
                 ),
                 _buildContainer(
                   title: 'Total Calories',
-                  value: '$totalCalories kcal', // Display total calories
+                  value: '$totalCalories kcal',
                 ),
               ],
             ),
