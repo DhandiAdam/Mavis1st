@@ -33,6 +33,7 @@ class NutritionPageState extends State<NutritionPage> {
             color: Colors.black,
             fontSize: 16,
             fontWeight: FontWeight.bold,
+            letterSpacing: 1.0,
           ),
         ),
         centerTitle: true,
@@ -48,11 +49,12 @@ class NutritionPageState extends State<NutritionPage> {
               icon: const Icon(Icons.arrow_back_ios_new),
               color: AppColors.gray600,
               onPressed: () {
-                Navigator.push(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => const MainNavigation(),
                   ),
+                  (route) => false,
                 );
               },
             ),
