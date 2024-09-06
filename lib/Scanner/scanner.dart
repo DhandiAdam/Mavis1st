@@ -130,9 +130,9 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                 onPressed: () async {
                   try {
                     final image = await _cameraController!.takePicture();
-
+                    final DateTime currentTime = DateTime.now();
                     if (context.mounted) {
-                      _showFoodInfo(context, image.path);
+                      _showFoodInfo(context, image.path, currentTime);
                     }
                   } catch (e) {
                     debugPrint('Error: $e');
@@ -147,7 +147,8 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     );
   }
 
-  void _showFoodInfo(BuildContext context, String imagePath) {
+  void _showFoodInfo(
+      BuildContext context, String imagePath, DateTime captureTime) {
     const String canEatText = 'You can eat this!';
     const String mainFoodName = 'Rice';
     const String descriptionContent =
@@ -157,19 +158,19 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     final List<Map<String, String>> nutritionInfo = [
       {
         'label': 'Carbohydrate',
-        'value': '39.8 g / 100 g',
+        'value': '39.8',
         'icon': 'Icons.fastfood',
         'color': 'Colors.green',
       },
       {
         'label': 'Lemak',
-        'value': '0.3 g / 100 g',
+        'value': '0.3',
         'icon': 'Icons.water_drop_outlined',
         'color': 'Colors.blue',
       },
       {
         'label': 'Protein',
-        'value': '3 g / 100 g',
+        'value': '3',
         'icon': 'Icons.wb_sunny_outlined',
         'color': 'Colors.orangeAccent',
       },
@@ -312,8 +313,11 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                                   {
                                     'imagePath': imagePath,
                                     'name': 'Rice',
-                                    'sugar': '0.1',
-                                    'calories': '130',
+                                    'carbohydrate': '39.8',
+                                    'lemak': '0.3',
+                                    'protein': '3',
+                                    'time':
+                                        '${captureTime.hour}:${captureTime.minute}',
                                   },
                                 ],
                               ),
@@ -325,10 +329,12 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                           children: [
                             Icon(Icons.bookmark_outline, size: 20),
                             SizedBox(width: 8),
-                            Text('Save what you eat!',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                )),
+                            Text(
+                              'Save what you eat!',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -401,27 +407,8 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
             fontSize: 18,
           ),
         ),
-        Text(value, style: const TextStyle(fontSize: 14)),
+        Text('$value g / 100 g', style: const TextStyle(fontSize: 14)),
       ],
-    );
-  }
-
-  Widget _buildInfoRow({required String label, required String value}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-          ),
-          Text(
-            value,
-            style: const TextStyle(fontSize: 18),
-          ),
-        ],
-      ),
     );
   }
 }
