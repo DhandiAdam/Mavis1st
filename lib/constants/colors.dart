@@ -18,4 +18,11 @@ class AppColors {
   static const Color gray300 = Color(0xFFD0D5DD);
   static const Color gray600 = Color(0xFF475467);
   static const Color gray700 = Color(0xFF344054);
+
+  //  warna gradient baru
+  static const Color gradientStart = Color(0xFF34BCAC); // Warna pertama
+  static const Color gradientEnd = Color(0xFF10DC9F); // Warna kedua
+
+  static const Color gradientsosStart = Color(0xFFBB5D5D); // Warna pertama
+  static const Color gradientsosEnd = Color(0xFFE32424); // Warna kedua
 }
