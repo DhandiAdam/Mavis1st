@@ -44,17 +44,32 @@ class HomePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0),
-                child: Text(
-                  'Activity Status',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+              Row(
+                children: [
+                  const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0),
+                    child: Text(
+                      'Activity Status',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25.0),
+                    child: _buildServicSos(Image.asset(
+                      'assets/icons/SOS.png', // Ganti dengan path gambar kamu
+                      width: 60,
+                      height: 60,
+                    )),
+                  ),
+                ],
               ),
+              const SizedBox(height: 20),
               Center(
                 child: Image.asset(
                   'assets/icons/Status.png',
@@ -81,24 +96,31 @@ class HomePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildServiceButton(Icons.sos),
+                  _buildServiceButton(Image.asset(
+                    'assets/icons/Food.png',
+                    width: 40,
+                    height: 40,
+                  )),
                   const SizedBox(width: 30),
-                  _buildServiceButton(Icons.track_changes_outlined),
+                  _buildServiceButton(Image.asset(
+                    'assets/icons/Hungry.png',
+                    width: 40,
+                    height: 40,
+                  )),
                   const SizedBox(width: 30),
-                  _buildServiceButton(Icons.medication),
+                  _buildServiceButton(Image.asset(
+                    'assets/icons/Goal.png',
+                    width: 40,
+                    height: 40,
+                  )),
+                  const SizedBox(width: 30),
+                  _buildServiceButton(Image.asset(
+                    'assets/icons/Pill.png',
+                    width: 40,
+                    height: 40,
+                  )),
                 ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildServiceButton(Icons.apple),
-                  const SizedBox(width: 30),
-                  _buildServiceButton(Icons.restaurant),
-                  const SizedBox(width: 30),
-                  _buildServiceButton(Icons.more_horiz_outlined),
-                ],
-              ),
+              )
             ],
           ),
         ),
@@ -160,7 +182,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceButton(IconData icon,
+  Widget _buildServiceButton(Widget icon,
       {Color backgroundColor = AppColors.baseColor4}) {
     return Material(
       color: Colors.transparent,
@@ -174,18 +196,50 @@ class HomePage extends StatelessWidget {
           height: 50,
           width: 50,
           decoration: BoxDecoration(
-            color: backgroundColor,
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gradientStart,
+                AppColors.gradientEnd
+              ], // Warna gradient
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 30,
-                color: Colors.white,
-              ),
-            ],
+          child: Center(
+            child: icon,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildServicSos(Widget icon,
+      {Color backgroundColor = AppColors.baseColor4}) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          print('Service clicked');
+        },
+        borderRadius: BorderRadius.circular(30), // Membuat oval
+        child: Container(
+          padding: const EdgeInsets.all(8.0),
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                AppColors.gradientsosStart,
+                AppColors.gradientsosEnd
+              ], // Warna gradient
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(30), // Membuat oval
+          ),
+          child: Center(
+            child: icon,
           ),
         ),
       ),
