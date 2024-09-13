@@ -149,15 +149,15 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
 
   void _showFoodInfo(
       BuildContext context, String imagePath, DateTime captureTime) {
-    const String canEatText = 'You can eat this!';
-    const String mainFoodName = 'Rice';
+    const String canEatText = 'Anda boleh makan ini!';
+    const String mainFoodName = 'Nasi';
     const String descriptionContent =
-        'Rice is uncooked rice that has been cooked by boiling or steaming. The process of boiling or steaming rice is also known as cooking. Cooking is necessary to enhance the aroma of the rice and make it softer while maintaining its consistency.';
-    const String nutritionTitle = 'nasi putih';
+        'Nasi adalah beras mentah yang telah dimasak dengan cara direbus atau dikukus. Proses merebus atau mengukus beras juga dikenal dengan istilah memasak. Memasak diperlukan untuk meningkatkan aroma beras dan membuatnya lebih lembut sekaligus mempertahankan konsistensinya.';
+    const String nutritionTitle = 'Nasi Putih';
 
     final List<Map<String, String>> nutritionInfo = [
       {
-        'label': 'Carbohydrate',
+        'label': 'Karbohidrat',
         'value': '39.8',
         'icon': 'Icons.fastfood',
         'color': 'Colors.green',
@@ -178,10 +178,10 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
 
     final List<Map<String, String>> aliasNameInfo = [
       {
-        'label': 'Fried Rice',
+        'label': 'Nasi Goreng',
       },
       {
-        'label': 'Rice',
+        'label': 'Nasi',
       },
       {
         'label': 'Oryza Sativa',
@@ -260,7 +260,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'Description',
+                      'Deksripsi',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -273,7 +273,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 15),
                     const Text(
-                      'From Nilai Gizi, Kandungan gizi $nutritionTitle',
+                      'From Nilai Gizi, Kandungan Gizi $nutritionTitle',
                       style: TextStyle(
                         fontSize: 16,
                         color: AppColors.gray600,
@@ -312,8 +312,8 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                                 foodItems: [
                                   {
                                     'imagePath': imagePath,
-                                    'name': 'Rice',
-                                    'carbohydrate': '39.8',
+                                    'name': 'Nasi ',
+                                    'karbohidrat': '39.8',
                                     'lemak': '0.3',
                                     'protein': '3',
                                     'time':
@@ -330,7 +330,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                             Icon(Icons.bookmark_outline, size: 20),
                             SizedBox(width: 8),
                             Text(
-                              'Save what you eat!',
+                              'Simpan apa yang Anda makan!',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),

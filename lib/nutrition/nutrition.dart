@@ -9,7 +9,7 @@ class NutritionPage extends StatefulWidget {
 
   const NutritionPage({
     super.key,
-    required this.foodItems,
+    this.foodItems = const [],
   });
 
   @override
@@ -17,18 +17,17 @@ class NutritionPage extends StatefulWidget {
 }
 
 class NutritionPageState extends State<NutritionPage> {
-  String _selectedPeriod = 'Weekly';
+  String _selectedPeriod = 'Mingguan';
 
   @override
   Widget build(BuildContext context) {
-    final totalSugar = _calculateTotalSugar();
     final totalCalories = _calculateTotalCalories();
     final today = _changeDateTime(DateTime.now());
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Nutrition',
+          'Nutrisi',
           style: TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -70,7 +69,7 @@ class NutritionPageState extends State<NutritionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Meal Nutritions",
+                  "Nutrisi Makanan",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -86,8 +85,8 @@ class NutritionPageState extends State<NutritionPage> {
                     ),
                     child: DropdownButton<String>(
                       value: _selectedPeriod,
-                      items:
-                          ['Weekly', 'Monthly', 'Yearly'].map((String value) {
+                      items: ['Mingguan', 'Bulanan', 'Tahunan']
+                          .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(
@@ -172,16 +171,6 @@ class NutritionPageState extends State<NutritionPage> {
     );
   }
 
-  // Calculate total sugar from the list of food items
-  String _calculateTotalSugar() {
-    double totalSugar = 0.0;
-    for (var item in widget.foodItems) {
-      final sugar = double.tryParse(item['sugar'] ?? '0') ?? 0;
-      totalSugar += sugar;
-    }
-    return totalSugar.toStringAsFixed(1);
-  }
-
   // Calculate total calories from the list of food items
   String _calculateTotalCalories() {
     double totalCalories = 0.0;
@@ -241,8 +230,8 @@ class NutritionPageState extends State<NutritionPage> {
                 children: [
                   _buildNutritionInfo(
                     icon: Icons.fastfood,
-                    label: 'Carbohydrate',
-                    value: foodItem['carbohydrate'] ?? '0',
+                    label: 'Karbohirat',
+                    value: foodItem['karbohidrat'] ?? '0',
                     color: Colors.green,
                   ),
                   _buildNutritionInfo(
