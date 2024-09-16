@@ -14,10 +14,21 @@ class _MySplashState extends State<MySplash> {
   Widget build(BuildContext context) {
     return FlutterSplashScreen.fadeIn(
       backgroundColor: Colors.white,
-      childWidget: SizedBox(
-        height: 200,
-        width: 200,
-        child: Image.asset("assets/mavis.png"),
+      childWidget: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 150,
+            width: 300,
+            child: Image.asset("assets/mavis.png"),
+          ),
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 200,
+            width: 250,
+            child: Image.asset("assets/2222.png"),
+          ),
+        ],
       ),
       nextScreen: const MainNavigation(),
     );

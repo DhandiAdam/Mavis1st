@@ -125,14 +125,13 @@ class HomePage extends StatelessWidget {
                       ),
                       HomePage()),
                   const SizedBox(width: 30),
-                  _buildServiceButton(
-                      context,
-                      Image.asset(
-                        'assets/icons/Pill.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                      HomePage()),
+
+                  _buildServiceButton(Image.asset(
+                    'assets/icons/Pill.png',
+                    width: 40,
+                    height: 40,
+                  )),
+                  const SizedBox(height: 40),
                 ],
               )
             ],

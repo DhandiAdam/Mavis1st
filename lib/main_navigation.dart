@@ -7,6 +7,8 @@ import 'package:mavis/profile/profile.dart';
 import 'package:mavis/Scanner/scanner.dart';
 import 'package:mavis/constants/colors.dart';
 import 'package:mavis/styles/style.dart';
+import 'package:mavis/register/register.dart';
+import 'package:mavis/login/login.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
