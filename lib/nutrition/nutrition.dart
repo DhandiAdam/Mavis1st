@@ -22,6 +22,11 @@ class NutritionPageState extends State<NutritionPage> {
   String _selectedPeriod = 'Mingguan';
   List<Map<String, String>> _foodItems = [];
 
+  final Map<String, Color> colorMap = {
+    'Colors.blue': Color(0xFF92A3FD),
+    'Colors.pink': Color(0xFFC58BF2),
+  };
+
   @override
   void initState() {
     super.initState();
@@ -100,6 +105,22 @@ class NutritionPageState extends State<NutritionPage> {
   @override
   Widget build(BuildContext context) {
     final today = _changeDateTime(DateTime.now());
+    const deceased = 'Diabetes Melitus';
+
+    final List<Map<String, String>> foodRecommendation = [
+      {
+        'label': 'Makanan Pagi',
+        'image': 'assets/menu/breakfast.png',
+        'totalFood': '120+',
+        'color': 'Colors.blue',
+      },
+      {
+        'label': 'Snack Pagi',
+        'image': 'assets/menu/morning_snack.png',
+        'totalFood': '130+',
+        'color': 'Colors.pink',
+      },
+    ];
 
     return Scaffold(
       appBar: AppBar(
@@ -137,83 +158,189 @@ class NutritionPageState extends State<NutritionPage> {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Nutrisi Makanan",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                DropdownButtonHideUnderline(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 5.0, vertical: 0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      gradient: appGradient(),
-                    ),
-                    child: DropdownButton<String>(
-                      value: _selectedPeriod,
-                      items: ['Mingguan', 'Bulanan', 'Tahunan']
-                          .map((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(color: AppColors.white),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Nutrisi Makanan",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          _selectedPeriod = newValue!;
-                        });
-                      },
-                      iconEnabledColor: AppColors.white,
-                      dropdownColor: AppColors.gradient2,
-                      style: const TextStyle(color: AppColors.white),
+                        ),
+                        DropdownButtonHideUnderline(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5.0, vertical: 0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20.0),
+                              gradient: appGradient(),
+                            ),
+                            child: DropdownButton<String>(
+                              value: _selectedPeriod,
+                              items: ['Mingguan', 'Bulanan', 'Tahunan']
+                                  .map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style:
+                                        const TextStyle(color: AppColors.white),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  _selectedPeriod = newValue!;
+                                });
+                              },
+                              iconEnabledColor: AppColors.white,
+                              dropdownColor: AppColors.gradient2,
+                              style: const TextStyle(color: AppColors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
+                    const SizedBox(height: 16.0),
+                    Image.asset(
+                      'assets/icons/Graph-nutrition.png',
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: 200,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      today,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    _foodItems.isEmpty
+                        ? const Center(
+                            child: Text('Data Kosong'),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: _foodItems.length,
+                            itemBuilder: (context, index) {
+                              final foodItem = _foodItems[index];
+                              return _buildFoodItemCard(foodItem);
+                            },
+                          ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Rekomendasi Makanan",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      deceased,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 150,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: foodRecommendation.length,
+                        itemBuilder: (context, index) {
+                          final recommendation = foodRecommendation[index];
+                          return _buildCard(recommendation);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            Image.asset(
-              'assets/icons/Graph-nutrition.png',
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 200,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              today,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
               ),
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: _foodItems.isEmpty
-                  ? const Center(
-                      child: Text('Data Kosong'),
-                    )
-                  : ListView.builder(
-                      itemCount: _foodItems.length,
-                      itemBuilder: (context, index) {
-                        final foodItem = _foodItems[index];
-                        return _buildFoodItemCard(foodItem);
-                      },
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Fungsi untuk membangun card
+  Widget _buildCard(Map<String, dynamic> recommendation) {
+    final color = colorMap[recommendation['color']] ?? Colors.black;
+
+    return Card(
+      margin: const EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      elevation: 5,
+      shadowColor: Colors.black.withOpacity(0.5),
+      color: color,
+      child: SizedBox(
+        width: 180,
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  Text(
+                    recommendation['label'],
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    '${recommendation['totalFood']} Makanan',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.black54,
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // ignore: avoid_print
+                      print('Lihat resep');
+                    },
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(100, 40),
+                      backgroundColor: color.withOpacity(0.8),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      textStyle: const TextStyle(fontSize: 14),
+                    ),
+                    child: const Text(
+                      'Pilih',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: Image.asset(
+                recommendation['image'],
+                width: 50,
+                height: 50,
+              ),
             ),
           ],
         ),
