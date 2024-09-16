@@ -3,13 +3,15 @@ import 'package:mavis/constants/colors.dart';
 import 'package:mavis/main_navigation.dart';
 import 'package:mavis/styles/style.dart';
 import 'dart:io';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class NutritionPage extends StatefulWidget {
   final List<Map<String, String>> foodItems;
 
   const NutritionPage({
     super.key,
-    required this.foodItems,
+    this.foodItems = const [],
   });
 
   @override
@@ -17,18 +19,92 @@ class NutritionPage extends StatefulWidget {
 }
 
 class NutritionPageState extends State<NutritionPage> {
-  String _selectedPeriod = 'Weekly';
+  String _selectedPeriod = 'Mingguan';
+  List<Map<String, String>> _foodItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFoodItems();
+  }
+
+  Future<void> _loadFoodItems() async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedFoodItems = prefs.getStringList('food_items');
+
+    if (savedFoodItems != null) {
+      setState(() {
+        try {
+          _foodItems = savedFoodItems.map((item) {
+            final Map<String, dynamic> decoded = jsonDecode(item);
+            return decoded.map((key, value) => MapEntry(key, value.toString()));
+          }).toList();
+        } catch (e) {
+          // ignore: avoid_print
+          print('Error decoding JSON: $e');
+        }
+      });
+    }
+  }
+
+  Future<void> _deleteFoodItem(Map<String, String> foodItem) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedFoodItems = prefs.getStringList('food_items');
+
+    if (savedFoodItems != null) {
+      String jsonFoodItem = jsonEncode(foodItem);
+      savedFoodItems.removeWhere((item) => item == jsonFoodItem);
+
+      await prefs.setStringList('food_items', savedFoodItems);
+
+      setState(() {
+        _foodItems.remove(foodItem);
+      });
+    }
+  }
+
+  String _getDayText(String? day) {
+    if (day == null) return 'Unknown day';
+
+    final today = DateTime.now();
+    final currentDayName = _getDayName(today.weekday);
+
+    if (day.toLowerCase() == currentDayName.toLowerCase()) {
+      return 'Hari ini';
+    } else {
+      return day;
+    }
+  }
+
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Senin';
+      case 2:
+        return 'Selasa';
+      case 3:
+        return 'Rabu';
+      case 4:
+        return 'Kamis';
+      case 5:
+        return 'Jumat';
+      case 6:
+        return 'Sabtu';
+      case 7:
+        return 'Minggu';
+      default:
+        return 'Unknown';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final totalSugar = _calculateTotalSugar();
-    final totalCalories = _calculateTotalCalories();
     final today = _changeDateTime(DateTime.now());
 
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Nutrition',
+          'Nutrisi',
           style: TextStyle(
             color: Colors.black,
             fontSize: 16,
@@ -70,7 +146,7 @@ class NutritionPageState extends State<NutritionPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  "Meal Nutritions",
+                  "Nutrisi Makanan",
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -86,8 +162,8 @@ class NutritionPageState extends State<NutritionPage> {
                     ),
                     child: DropdownButton<String>(
                       value: _selectedPeriod,
-                      items:
-                          ['Weekly', 'Monthly', 'Yearly'].map((String value) {
+                      items: ['Mingguan', 'Bulanan', 'Tahunan']
+                          .map((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(
@@ -127,13 +203,17 @@ class NutritionPageState extends State<NutritionPage> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: widget.foodItems.length,
-                itemBuilder: (context, index) {
-                  final foodItem = widget.foodItems[index];
-                  return _buildFoodItemCard(foodItem);
-                },
-              ),
+              child: _foodItems.isEmpty
+                  ? const Center(
+                      child: Text('Data Kosong'),
+                    )
+                  : ListView.builder(
+                      itemCount: _foodItems.length,
+                      itemBuilder: (context, index) {
+                        final foodItem = _foodItems[index];
+                        return _buildFoodItemCard(foodItem);
+                      },
+                    ),
             ),
           ],
         ),
@@ -150,46 +230,67 @@ class NutritionPageState extends State<NutritionPage> {
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.5),
       child: ListTile(
-        leading: foodItem['imagePath'] != null
-            ? Image.file(
-                File(foodItem['imagePath']!),
-                width: 40,
-                height: 40,
-                fit: BoxFit.cover,
-              )
-            : const Icon(Icons.image, size: 40),
+        leading: SizedBox(
+          width: 40,
+          height: 40,
+          child: foodItem['imagePath'] != null
+              ? Image.file(
+                  File(foodItem['imagePath']!),
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                )
+              : const Icon(Icons.image, size: 40),
+        ),
         title: Text(
-          foodItem['name'] ?? 'Food',
+          foodItem['name'] ?? 'Makanan',
           style:
               const TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
         ),
         subtitle: Text(
-          'Today | ${foodItem['time'] ?? 'No time'}',
+          '${_getDayText(foodItem['day'])} | ${foodItem['time'] ?? 'No time'}',
           style: const TextStyle(color: Colors.black54),
+        ),
+        trailing: IconButton(
+          icon: Image.asset(
+            'assets/icons/delete.png',
+            width: 40,
+            height: 40,
+          ),
+          onPressed: () {
+            _showDeleteConfirmationDialog(foodItem);
+          },
         ),
         onTap: () => _showFoodDetails(context, foodItem),
       ),
     );
   }
 
-  // Calculate total sugar from the list of food items
-  String _calculateTotalSugar() {
-    double totalSugar = 0.0;
-    for (var item in widget.foodItems) {
-      final sugar = double.tryParse(item['sugar'] ?? '0') ?? 0;
-      totalSugar += sugar;
-    }
-    return totalSugar.toStringAsFixed(1);
-  }
-
-  // Calculate total calories from the list of food items
-  String _calculateTotalCalories() {
-    double totalCalories = 0.0;
-    for (var item in widget.foodItems) {
-      final calories = double.tryParse(item['calories'] ?? '0') ?? 0;
-      totalCalories += calories;
-    }
-    return totalCalories.toStringAsFixed(1);
+  void _showDeleteConfirmationDialog(Map<String, String> foodItem) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Konfirmasi Hapus"),
+          content: const Text("Apakah Anda yakin ingin menghapus makanan ini?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text("Batal"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteFoodItem(foodItem);
+              },
+              child: const Text("Hapus", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // Show food details in a dialog
@@ -241,8 +342,8 @@ class NutritionPageState extends State<NutritionPage> {
                 children: [
                   _buildNutritionInfo(
                     icon: Icons.fastfood,
-                    label: 'Carbohydrate',
-                    value: foodItem['carbohydrate'] ?? '0',
+                    label: 'Karbohidrat',
+                    value: foodItem['karbohidrat'] ?? '0',
                     color: Colors.green,
                   ),
                   _buildNutritionInfo(

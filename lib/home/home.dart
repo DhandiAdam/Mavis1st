@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mavis/constants/colors.dart';
+import 'package:mavis/nutrition/nutrition.dart';
 
 class HomePage extends StatelessWidget {
   final String userName = 'Admin';
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Welcome Back',
+                'Selamat Datang,',
                 style: TextStyle(
                   fontSize: 14,
                   color: AppColors.greySmooth,
@@ -50,7 +51,7 @@ class HomePage extends StatelessWidget {
                     padding:
                         EdgeInsets.symmetric(horizontal: 25.0, vertical: 0.0),
                     child: Text(
-                      'Activity Status',
+                      'Status Aktivitas',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -58,11 +59,11 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 25.0),
                     child: _buildServicSos(Image.asset(
-                      'assets/icons/SOS.png', // Ganti dengan path gambar kamu
+                      'assets/icons/SOS.png',
                       width: 60,
                       height: 60,
                     )),
@@ -80,13 +81,13 @@ class HomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildCard(
-                    title: 'Calories',
+                    title: 'Kalori',
                     subtitle: calories,
                     image: 'assets/icons/Calories-Pie.png',
                   ),
                   const SizedBox(width: 20),
                   _buildCard(
-                    title: 'Sleep',
+                    title: 'Tidur',
                     subtitle: sleep,
                     image: 'assets/icons/Sleep-Graph.png',
                   ),
@@ -96,24 +97,35 @@ class HomePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildServiceButton(Image.asset(
-                    'assets/icons/Food.png',
-                    width: 40,
-                    height: 40,
-                  )),
+                  _buildServiceButton(
+                    context,
+                    Image.asset(
+                      'assets/icons/Food.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                    const NutritionPage(),
+                  ),
                   const SizedBox(width: 30),
-                  _buildServiceButton(Image.asset(
-                    'assets/icons/Hungry.png',
-                    width: 40,
-                    height: 40,
-                  )),
+                  _buildServiceButton(
+                      context,
+                      Image.asset(
+                        'assets/icons/Hungry.png',
+                        width: 40,
+                        height: 40,
+                      ),
+                      HomePage()),
                   const SizedBox(width: 30),
-                  _buildServiceButton(Image.asset(
-                    'assets/icons/Goal.png',
-                    width: 40,
-                    height: 40,
-                  )),
+                  _buildServiceButton(
+                      context,
+                      Image.asset(
+                        'assets/icons/Goal.png',
+                        width: 40,
+                        height: 40,
+                      ),
+                      HomePage()),
                   const SizedBox(width: 30),
+
                   _buildServiceButton(Image.asset(
                     'assets/icons/Pill.png',
                     width: 40,
@@ -183,13 +195,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildServiceButton(Widget icon,
+  Widget _buildServiceButton(BuildContext context, Widget icon, Widget page,
       {Color backgroundColor = AppColors.baseColor4}) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          print('Service clicked');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
         },
         borderRadius: BorderRadius.circular(10),
         child: Container(
@@ -197,7 +212,7 @@ class HomePage extends StatelessWidget {
           height: 50,
           width: 50,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               colors: [
                 AppColors.gradientStart,
                 AppColors.gradientEnd
@@ -223,21 +238,18 @@ class HomePage extends StatelessWidget {
         onTap: () {
           print('Service clicked');
         },
-        borderRadius: BorderRadius.circular(30), // Membuat oval
+        borderRadius: BorderRadius.circular(30),
         child: Container(
           padding: const EdgeInsets.all(8.0),
           height: 60,
           width: 60,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.gradientsosStart,
-                AppColors.gradientsosEnd
-              ], // Warna gradient
+            gradient: const LinearGradient(
+              colors: [AppColors.gradientsosStart, AppColors.gradientsosEnd],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
-            borderRadius: BorderRadius.circular(30), // Membuat oval
+            borderRadius: BorderRadius.circular(30),
           ),
           child: Center(
             child: icon,

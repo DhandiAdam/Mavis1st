@@ -3,6 +3,8 @@ import 'package:camera/camera.dart';
 import 'package:mavis/constants/colors.dart';
 import 'package:mavis/nutrition/nutrition.dart';
 import 'dart:async';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Scanner extends StatefulWidget {
   const Scanner({super.key});
@@ -54,6 +56,27 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     _cameraController?.dispose();
     _animationController.dispose();
     super.dispose();
+  }
+
+  String _getDayName(int weekday) {
+    switch (weekday) {
+      case 1:
+        return 'Senin';
+      case 2:
+        return 'Selasa';
+      case 3:
+        return 'Rabu';
+      case 4:
+        return 'Kamis';
+      case 5:
+        return 'Jumat';
+      case 6:
+        return 'Sabtu';
+      case 7:
+        return 'Minggu';
+      default:
+        return 'Unknown';
+    }
   }
 
   @override
@@ -149,15 +172,18 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
 
   void _showFoodInfo(
       BuildContext context, String imagePath, DateTime captureTime) {
-    const String canEatText = 'You can eat this!';
-    const String mainFoodName = 'Rice';
+    const String canEatText = 'Anda boleh makan ini!';
+    const String mainFoodName = 'Nasi';
+    const String karbohidrat = '39.8';
+    const String lemak = '0.3';
+    const String protein = '3';
     const String descriptionContent =
-        'Rice is uncooked rice that has been cooked by boiling or steaming. The process of boiling or steaming rice is also known as cooking. Cooking is necessary to enhance the aroma of the rice and make it softer while maintaining its consistency.';
-    const String nutritionTitle = 'nasi putih';
+        'Nasi adalah beras mentah yang telah dimasak dengan cara direbus atau dikukus. Proses merebus atau mengukus beras juga dikenal dengan istilah memasak. Memasak diperlukan untuk meningkatkan aroma beras dan membuatnya lebih lembut sekaligus mempertahankan konsistensinya.';
+    const String nutritionTitle = 'Nasi Putih';
 
     final List<Map<String, String>> nutritionInfo = [
       {
-        'label': 'Carbohydrate',
+        'label': 'Karbohidrat',
         'value': '39.8',
         'icon': 'Icons.fastfood',
         'color': 'Colors.green',
@@ -178,10 +204,10 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
 
     final List<Map<String, String>> aliasNameInfo = [
       {
-        'label': 'Fried Rice',
+        'label': 'Nasi Goreng',
       },
       {
-        'label': 'Rice',
+        'label': 'Nasi',
       },
       {
         'label': 'Oryza Sativa',
@@ -260,7 +286,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'Description',
+                      'Deksripsi',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -273,7 +299,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 15),
                     const Text(
-                      'From Nilai Gizi, Kandungan gizi $nutritionTitle',
+                      'From Nilai Gizi, Kandungan Gizi $nutritionTitle',
                       style: TextStyle(
                         fontSize: 16,
                         color: AppColors.gray600,
@@ -305,21 +331,22 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                         ),
                         onPressed: () {
                           Navigator.pop(context);
+
+                          final Map<String, String> foodItem = {
+                            'imagePath': imagePath,
+                            'name': mainFoodName,
+                            'karbohidrat': karbohidrat,
+                            'lemak': lemak,
+                            'protein': protein,
+                            'time': '${captureTime.hour}:${captureTime.minute}',
+                            'day': _getDayName(captureTime.weekday),
+                          };
+                          _saveFoodItem(foodItem);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => NutritionPage(
-                                foodItems: [
-                                  {
-                                    'imagePath': imagePath,
-                                    'name': 'Rice',
-                                    'carbohydrate': '39.8',
-                                    'lemak': '0.3',
-                                    'protein': '3',
-                                    'time':
-                                        '${captureTime.hour}:${captureTime.minute}',
-                                  },
-                                ],
+                                foodItems: [foodItem],
                               ),
                             ),
                           );
@@ -330,7 +357,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                             Icon(Icons.bookmark_outline, size: 20),
                             SizedBox(width: 8),
                             Text(
-                              'Save what you eat!',
+                              'Simpan apa yang Anda makan!',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                               ),
@@ -347,6 +374,16 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
         );
       },
     );
+  }
+
+  Future<void> _saveFoodItem(Map<String, String> foodItem) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? savedFoodItems = prefs.getStringList('food_items');
+    savedFoodItems ??= [];
+
+    savedFoodItems.insert(0, json.encode(foodItem));
+
+    await prefs.setStringList('food_items', savedFoodItems);
   }
 
   IconData _getIconFromString(String iconName) {
