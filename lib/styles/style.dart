@@ -13,3 +13,16 @@ LinearGradient appGradient() {
     tileMode: TileMode.clamp,
   );
 }
+
+LinearGradient recommendationGradient(Color color1, Color color2) {
+  return LinearGradient(
+    colors: [
+      color1,
+      color2,
+    ],
+    begin: const FractionalOffset(0, 0),
+    end: const FractionalOffset(2.5, 0),
+    stops: const [0, 1],
+    tileMode: TileMode.clamp,
+  );
+}

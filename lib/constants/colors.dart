@@ -25,4 +25,7 @@ class AppColors {
 
   static const Color gradientsosStart = Color(0xFFBB5D5D); // Warna pertama
   static const Color gradientsosEnd = Color(0xFFE32424); // Warna kedua
+
+  static const Color blueGradient1 = Color(0xFF92A3FD);
+  static const Color blueGradient2 = Color(0xFF9DCEFF);
 }
