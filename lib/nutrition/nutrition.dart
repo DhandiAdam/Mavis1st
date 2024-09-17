@@ -22,11 +22,6 @@ class NutritionPageState extends State<NutritionPage> {
   String _selectedPeriod = 'Mingguan';
   List<Map<String, String>> _foodItems = [];
 
-  final Map<String, Color> colorMap = {
-    'Colors.blue': Color(0xFF92A3FD),
-    'Colors.pink': Color(0xFFC58BF2),
-  };
-
   @override
   void initState() {
     super.initState();
@@ -107,18 +102,22 @@ class NutritionPageState extends State<NutritionPage> {
     final today = _changeDateTime(DateTime.now());
     const deceased = 'Diabetes Melitus';
 
-    final List<Map<String, String>> foodRecommendation = [
+    final List<Map<String, dynamic>> foodRecommendation = [
       {
         'label': 'Makanan Pagi',
         'image': 'assets/menu/breakfast.png',
         'totalFood': '120+',
-        'color': 'Colors.blue',
+        'color': recommendationGradient(
+            AppColors.blueGradient1, AppColors.blueGradient2),
+        'buttonColor': const Color(0xFF92A3FD),
       },
       {
         'label': 'Snack Pagi',
         'image': 'assets/menu/morning_snack.png',
         'totalFood': '130+',
-        'color': 'Colors.pink',
+        'color': recommendationGradient(
+            AppColors.blueGradient1, AppColors.blueGradient2),
+        'buttonColor': const Color(0xFF92A3FD),
       },
     ];
 
@@ -277,72 +276,94 @@ class NutritionPageState extends State<NutritionPage> {
 
   // Fungsi untuk membangun card
   Widget _buildCard(Map<String, dynamic> recommendation) {
-    final color = colorMap[recommendation['color']] ?? Colors.black;
+    final gradient = recommendation['color'] as LinearGradient;
+    final buttonColor = recommendation['buttonColor'] as Color;
+
+    // Apply opacity to the gradient colors
+    final gradientWithOpacity = LinearGradient(
+      begin: gradient.begin,
+      end: gradient.end,
+      colors: gradient.colors.map((color) => color.withOpacity(0.3)).toList(),
+    );
 
     return Card(
       margin: const EdgeInsets.all(8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
       elevation: 5,
       shadowColor: Colors.black.withOpacity(0.5),
-      color: color,
-      child: SizedBox(
-        width: 180,
-        child: Stack(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    recommendation['label'],
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: gradientWithOpacity,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(22.0),
+            topRight: Radius.circular(100.0),
+            bottomLeft: Radius.circular(22.0),
+            bottomRight: Radius.circular(22.0),
+          ),
+        ),
+        child: SizedBox(
+          width: 200,
+          height: 205,
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 30,
                     ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    '${recommendation['totalFood']} Makanan',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black54,
+                    Text(
+                      recommendation['label'],
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // ignore: avoid_print
-                      print('Lihat resep');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(100, 40),
-                      backgroundColor: color.withOpacity(0.8),
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      textStyle: const TextStyle(fontSize: 14),
+                    const SizedBox(height: 1),
+                    Text(
+                      '${recommendation['totalFood']} Makanan',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.normal,
+                        color: Colors.black54,
+                      ),
                     ),
-                    child: const Text(
-                      'Pilih',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ElevatedButton(
+                      onPressed: () {
+                        // ignore: avoid_print
+                        print('Lihat resep');
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(70, 30),
+                        backgroundColor: buttonColor.withOpacity(0.8),
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        textStyle: const TextStyle(fontSize: 14),
+                      ),
+                      child: const Text(
+                        'Pilih',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Positioned(
-              top: 8,
-              right: 8,
-              child: Image.asset(
-                recommendation['image'],
-                width: 50,
-                height: 50,
+              Positioned(
+                top: 0,
+                right: 0,
+                child: SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset(
+                    recommendation['image'],
+                    fit: BoxFit.contain,
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
