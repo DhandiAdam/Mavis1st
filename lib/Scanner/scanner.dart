@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:mavis/constants/colors.dart';
 import 'package:mavis/nutrition/nutrition.dart';
+import 'package:mavis/afterEat/AfterEat.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -174,9 +175,10 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
       BuildContext context, String imagePath, DateTime captureTime) {
     const String canEatText = 'Anda boleh makan ini!';
     const String mainFoodName = 'Nasi';
-    const String karbohidrat = '39.8';
-    const String lemak = '0.3';
-    const String protein = '3';
+    const String karbohidrat = '40';
+    const String lemak = '0';
+    const String protein = '4';
+    const String Kalori = '175';
     const String descriptionContent =
         'Nasi adalah beras mentah yang telah dimasak dengan cara direbus atau dikukus. Proses merebus atau mengukus beras juga dikenal dengan istilah memasak. Memasak diperlukan untuk meningkatkan aroma beras dan membuatnya lebih lembut sekaligus mempertahankan konsistensinya.';
     const String nutritionTitle = 'Nasi Putih';
@@ -184,27 +186,33 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     final List<Map<String, String>> nutritionInfo = [
       {
         'label': 'Karbohidrat',
-        'value': '39.8',
-        'icon': 'Icons.fastfood',
+        'value': '40',
+        'icon': 'assets/icons/Carbo.png',
         'color': 'Colors.green',
       },
       {
         'label': 'Lemak',
-        'value': '0.3',
-        'icon': 'Icons.water_drop_outlined',
+        'value': '0',
+        'icon': 'assets/icons/lemak2.png',
         'color': 'Colors.blue',
       },
       {
         'label': 'Protein',
-        'value': '3',
-        'icon': 'Icons.wb_sunny_outlined',
+        'value': '4',
+        'icon': 'assets/icons/Protein.png',
+        'color': 'Colors.orangeAccent',
+      },
+      {
+        'label': 'Kalori',
+        'value': '175',
+        'icon': 'assets/icons/kalori_daging.png',
         'color': 'Colors.orangeAccent',
       },
     ];
 
     final List<Map<String, String>> aliasNameInfo = [
       {
-        'label': 'Nasi Goreng',
+        'label': 'Nasi Putih',
       },
       {
         'label': 'Nasi',
@@ -286,7 +294,7 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                     ),
                     const SizedBox(height: 20),
                     const Text(
-                      'Deksripsi',
+                      'Deskripsi',
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -305,18 +313,51 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
                         color: AppColors.gray600,
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: nutritionInfo.map((info) {
-                        return _buildNutritionInfo(
-                          icon: _getIconFromString(info['icon']!),
-                          label: info['label']!,
-                          value: info['value']!,
-                          color: _getColorFromString(info['color']!),
-                        );
-                      }).toList(),
+
+                    // Garis horizontal di bawah teks
+                    const SizedBox(height: 10),
+                    const Divider(
+                      color: Colors.grey, // warna garis
+                      thickness: 1.5, // ketebalan garis
                     ),
+
+                    const SizedBox(height: 10),
+
+                    // Grid 2x2 untuk menampilkan ikon nutrisi
+                    Column(
+                      children: [
+                        // Baris pertama (2 item)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: nutritionInfo.sublist(0, 2).map((info) {
+                            return _buildNutritionInfo(
+                              icon: _getImageFromString(
+                                  info['icon']!), // Menggunakan gambar
+                              label: info['label']!,
+                              value: info['value']!,
+                              color: _getColorFromString(info['color']!),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(
+                            height: 20), // Jarak antara baris pertama dan kedua
+
+                        // Baris kedua (2 item)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: nutritionInfo.sublist(2, 4).map((info) {
+                            return _buildNutritionInfo(
+                              icon: _getImageFromString(
+                                  info['icon']!), // Menggunakan gambar
+                              label: info['label']!,
+                              value: info['value']!,
+                              color: _getColorFromString(info['color']!),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+
                     const SizedBox(height: 30),
                     Center(
                       child: ElevatedButton(
@@ -376,6 +417,43 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     );
   }
 
+  Widget _buildNutritionInfo({
+    required Widget icon,
+    required String label,
+    required String value,
+    required Color color,
+  }) {
+    return Column(
+      children: [
+        // Container untuk membungkus icon
+        Container(
+          decoration: BoxDecoration(
+            color:
+                color.withOpacity(0.1), // Warna background sesuai dengan color
+            borderRadius: BorderRadius.circular(15), // Membuat sudut rounded
+          ),
+          padding: const EdgeInsets.all(16), // Memperbesar padding untuk icon
+          child: icon, // Menampilkan gambar/icon
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16, // Memperbesar teks label
+          ),
+        ),
+        Text(
+          '$value g / 100 g',
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _saveFoodItem(Map<String, String> foodItem) async {
     final prefs = await SharedPreferences.getInstance();
     List<String>? savedFoodItems = prefs.getStringList('food_items');
@@ -386,17 +464,13 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
     await prefs.setStringList('food_items', savedFoodItems);
   }
 
-  IconData _getIconFromString(String iconName) {
-    switch (iconName) {
-      case 'Icons.fastfood':
-        return Icons.fastfood;
-      case 'Icons.water_drop_outlined':
-        return Icons.water_drop_outlined;
-      case 'Icons.wb_sunny_outlined':
-        return Icons.wb_sunny_outlined;
-      default:
-        return Icons.dehaze_outlined;
-    }
+  Widget _getImageFromString(String imagePath) {
+    return Image.asset(
+      imagePath,
+      height: 60, // Sesuaikan ukuran gambar
+      width: 60,
+      fit: BoxFit.contain, // Agar gambar proporsional
+    );
   }
 
   Color _getColorFromString(String colorString) {
@@ -423,29 +497,6 @@ class ScannerState extends State<Scanner> with SingleTickerProviderStateMixin {
         borderRadius: BorderRadius.circular(8),
         side: const BorderSide(color: Colors.transparent),
       ),
-    );
-  }
-
-  Widget _buildNutritionInfo({
-    required IconData icon,
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Column(
-      children: [
-        Icon(icon, color: color),
-        const SizedBox(height: 5),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        Text('$value g / 100 g', style: const TextStyle(fontSize: 14)),
-      ],
     );
   }
 }

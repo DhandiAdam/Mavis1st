@@ -1,3 +1,5 @@
+// lib/app_colors.dart
+
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -19,13 +21,26 @@ class AppColors {
   static const Color gray600 = Color(0xFF475467);
   static const Color gray700 = Color(0xFF344054);
 
-  //  warna gradient baru
-  static const Color gradientStart = Color(0xFF34BCAC); // Warna pertama
-  static const Color gradientEnd = Color(0xFF10DC9F); // Warna kedua
+  // Gradient colors for SOS button
+  static const Color gradientStart = Color(0xFF34BCAC); // First color
+  static const Color gradientEnd = Color(0xFF10DC9F); // Second color
 
-  static const Color gradientsosStart = Color(0xFFBB5D5D); // Warna pertama
-  static const Color gradientsosEnd = Color(0xFFE32424); // Warna kedua
+  static const Color gradientsosStart = Color(0xFFBB5D5D); // First color
+  static const Color gradientsosEnd = Color(0xFFE32424); // Second color
 
+  // Additional Colors
   static const Color blueGradient1 = Color(0xFF92A3FD);
   static const Color blueGradient2 = Color(0xFF9DCEFF);
+
+  static const Color newColor1 = Color(0xFF7CCCDE);
+  static const Color newColor2 = Color(0xFF9DCEFF);
+  static const Color newColor3 = Color(0xFFC58BF2);
+  static const Color newColor4 = Color(0xFFEEA4CE);
+  static const Color newColor5 = Color(0xFF92A3FD);
+  static const Color newColor6 = Color(0xFF9DCEFF);
+
+  static const Color greenGradientStart = Color(0xFF73DD6A); // Top
+  static const Color greenGradientEnd = Color(0xFF55FF8E); // Bottom
+
+  static const Color recommendationBlue = Color(0xFF92A3FD);
 }

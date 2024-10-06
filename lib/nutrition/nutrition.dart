@@ -22,6 +22,11 @@ class NutritionPageState extends State<NutritionPage> {
   String _selectedPeriod = 'Mingguan';
   List<Map<String, String>> _foodItems = [];
 
+  final Map<String, Color> colorMap = {
+    'Colors.blue': Color(0xFF92A3FD),
+    'Colors.pink': Color(0xFFC58BF2),
+  };
+
   @override
   void initState() {
     super.initState();
@@ -105,19 +110,43 @@ class NutritionPageState extends State<NutritionPage> {
     final List<Map<String, dynamic>> foodRecommendation = [
       {
         'label': 'Makanan Pagi',
-        'image': 'assets/menu/breakfast.png',
+        'image': 'assets/menu/Salad.png',
         'totalFood': '120+',
         'color': recommendationGradient(
             AppColors.blueGradient1, AppColors.blueGradient2),
         'buttonColor': const Color(0xFF92A3FD),
       },
       {
-        'label': 'Snack Pagi',
-        'image': 'assets/menu/morning_snack.png',
-        'totalFood': '130+',
+        'label': 'Makanan Siang',
+        'image': 'assets/menu/Daging.png',
+        'totalFood': '120+',
         'color': recommendationGradient(
             AppColors.blueGradient1, AppColors.blueGradient2),
         'buttonColor': const Color(0xFF92A3FD),
+      },
+      {
+        'label': 'Snack Sore',
+        'image': 'assets/menu/Snack.png',
+        'totalFood': '120+',
+        'color':
+            recommendationGradient(AppColors.newColor1, AppColors.newColor2),
+        'buttonColor': const Color(0xFFC58BF2),
+      },
+      {
+        'label': 'Makanan Malam',
+        'image': 'assets/menu/Brokoli.png',
+        'totalFood': '120+',
+        'color':
+            recommendationGradient(AppColors.newColor5, AppColors.newColor6),
+        'buttonColor': const Color(0xFF92A3FD),
+      },
+      {
+        'label': 'Snack Malam',
+        'image': 'assets/menu/Almond.png',
+        'totalFood': '120+',
+        'color':
+            recommendationGradient(AppColors.newColor5, AppColors.newColor6),
+        'buttonColor': const Color(0xFFC58BF2),
       },
     ];
 
@@ -409,7 +438,17 @@ class NutritionPageState extends State<NutritionPage> {
             _showDeleteConfirmationDialog(foodItem);
           },
         ),
-        onTap: () => _showFoodDetails(context, foodItem),
+        onTap: () {
+          if (foodItem.containsKey('imagePath')) {
+            _showFoodDetails(
+              context,
+              foodItem['imagePath']!, // Ambil imagePath dari foodItem
+              DateTime.now(), // Gunakan waktu saat ini sebagai captureTime
+            );
+          } else {
+            print('imagePath tidak ditemukan dalam foodItem');
+          }
+        },
       ),
     );
   }
@@ -442,98 +481,249 @@ class NutritionPageState extends State<NutritionPage> {
   }
 
   // Show food details in a dialog
-  void _showFoodDetails(BuildContext context, Map<String, String> foodItem) {
+  void _showFoodDetails(
+      BuildContext context, String imagePath, DateTime captureTime) {
+    const String mainFoodName = 'Nasi';
+    const String karbohidrat = '40';
+    const String lemak = '0';
+    const String protein = '4';
+    const String Kalori = '175';
+    const String descriptionContent =
+        'Nasi adalah beras mentah yang telah dimasak dengan cara direbus atau dikukus. Proses merebus atau mengukus beras juga dikenal dengan istilah memasak. Memasak diperlukan untuk meningkatkan aroma beras dan membuatnya lebih lembut sekaligus mempertahankan konsistensinya.';
+    const String nutritionTitle = 'Nasi Putih';
+
+    final List<Map<String, String>> nutritionInfo = [
+      {
+        'label': 'Karbohidrat',
+        'value': '40',
+        'icon': 'assets/icons/Carbo.png',
+        'color': 'Colors.green',
+      },
+      {
+        'label': 'Lemak',
+        'value': '0',
+        'icon': 'assets/icons/lemak2.png',
+        'color': 'Colors.blue',
+      },
+      {
+        'label': 'Protein',
+        'value': '4',
+        'icon': 'assets/icons/Protein.png',
+        'color': 'Colors.orangeAccent',
+      },
+      {
+        'label': 'Kalori',
+        'value': '175',
+        'icon': 'assets/icons/kalori_daging.png',
+        'color': 'Colors.orangeAccent',
+      },
+    ];
+
+    final List<Map<String, String>> aliasNameInfo = [
+      {
+        'label': 'Nasi Putih',
+      },
+      {
+        'label': 'Nasi',
+      },
+      {
+        'label': 'Oryza Sativa',
+      },
+    ];
+
     showModalBottomSheet(
       context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      isScrollControlled: true,
       builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 100,
-                  height: 5,
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Center(
-                child: Text(
-                  foodItem['name'] ?? 'Food Details',
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              Center(
-                child: foodItem['imagePath'] != null
-                    ? Image.file(
-                        File(foodItem['imagePath']!),
+        return DraggableScrollableSheet(
+          expand: false,
+          initialChildSize: 0.5,
+          minChildSize: 0.5,
+          maxChildSize: 0.9,
+          builder: (context, scrollController) {
+            return SingleChildScrollView(
+              controller: scrollController,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
                         width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
-                      )
-                    : const Icon(Icons.image, size: 100),
+                        height: 5,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+                    const Center(
+                      child: Text(
+                        mainFoodName,
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: aliasNameInfo.map((info) {
+                        return _buildTagChip(info['label']!);
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Deskripsi',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      descriptionContent,
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    const SizedBox(height: 15),
+                    const Text(
+                      'From Nilai Gizi, Kandungan Gizi $nutritionTitle',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.gray600,
+                      ),
+                    ),
+
+                    // Garis horizontal di bawah teks
+                    const SizedBox(height: 10),
+                    const Divider(
+                      color: Colors.grey, // warna garis
+                      thickness: 1.5, // ketebalan garis
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Grid 2x2 untuk menampilkan ikon nutrisi
+                    Column(
+                      children: [
+                        // Baris pertama (2 item)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: nutritionInfo.sublist(0, 2).map((info) {
+                            return _buildNutritionInfo(
+                              icon: _getImageFromString(
+                                  info['icon']!), // Menggunakan gambar
+                              label: info['label']!,
+                              value: info['value']!,
+                              color: _getColorFromString(info['color']!),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(
+                            height: 20), // Jarak antara baris pertama dan kedua
+
+                        // Baris kedua (2 item)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: nutritionInfo.sublist(2, 4).map((info) {
+                            return _buildNutritionInfo(
+                              icon: _getImageFromString(
+                                  info['icon']!), // Menggunakan gambar
+                              label: info['label']!,
+                              value: info['value']!,
+                              color: _getColorFromString(info['color']!),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildNutritionInfo(
-                    icon: Icons.fastfood,
-                    label: 'Karbohidrat',
-                    value: foodItem['karbohidrat'] ?? '0',
-                    color: Colors.green,
-                  ),
-                  _buildNutritionInfo(
-                    icon: Icons.water_drop_outlined,
-                    label: 'Lemak',
-                    value: foodItem['lemak'] ?? '0',
-                    color: Colors.blue,
-                  ),
-                  _buildNutritionInfo(
-                    icon: Icons.wb_sunny_outlined,
-                    label: 'Protein',
-                    value: foodItem['protein'] ?? '0',
-                    color: Colors.orangeAccent,
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
   }
 
+  Widget _getImageFromString(String imagePath) {
+    return Image.asset(
+      imagePath,
+      height: 60, // Sesuaikan ukuran gambar
+      width: 60,
+      fit: BoxFit.contain, // Agar gambar proporsional
+    );
+  }
+
+  Color _getColorFromString(String colorString) {
+    switch (colorString) {
+      case 'Colors.green':
+        return AppColors.baseColor1;
+      case 'Colors.blue':
+        return Colors.blue;
+      case 'Colors.orangeAccent':
+        return Colors.orangeAccent;
+      default:
+        return AppColors.baseColor1;
+    }
+  }
+
+  Widget _buildTagChip(String label) {
+    return Chip(
+      label: Text(
+        label,
+        style: const TextStyle(color: Colors.black45),
+      ),
+      backgroundColor: AppColors.gray300,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+        side: const BorderSide(color: Colors.transparent),
+      ),
+    );
+  }
+
   Widget _buildNutritionInfo({
-    required IconData icon,
+    required Widget icon,
     required String label,
     required String value,
     required Color color,
   }) {
     return Column(
       children: [
-        Icon(icon, color: color),
-        const SizedBox(height: 5),
+        // Container untuk membungkus icon
+        Container(
+          decoration: BoxDecoration(
+            color:
+                color.withOpacity(0.1), // Warna background sesuai dengan color
+            borderRadius: BorderRadius.circular(15), // Membuat sudut rounded
+          ),
+          padding: const EdgeInsets.all(16), // Memperbesar padding untuk icon
+          child: icon, // Menampilkan gambar/icon
+        ),
+        const SizedBox(height: 8),
         Text(
           label,
-          style: TextStyle(
-            color: color,
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 18,
+            fontSize: 16, // Memperbesar teks label
           ),
         ),
-        Text('$value g / 100 g', style: const TextStyle(fontSize: 14)),
+        Text(
+          '$value g / 100 g',
+          style: const TextStyle(
+            fontSize: 14,
+            color: Colors.grey,
+          ),
+        ),
       ],
     );
   }

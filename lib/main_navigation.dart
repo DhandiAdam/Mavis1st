@@ -6,9 +6,12 @@ import 'package:mavis/notifications/notifications.dart';
 import 'package:mavis/profile/profile.dart';
 import 'package:mavis/Scanner/scanner.dart';
 import 'package:mavis/constants/colors.dart';
+import 'package:mavis/afterEat/AfterEat.dart';
 import 'package:mavis/styles/style.dart';
 import 'package:mavis/register/register.dart';
 import 'package:mavis/login/login.dart';
+import 'package:mavis/Sos/Sos.dart';
+import 'package:mavis/ConctactScreen/ContactScreen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -19,18 +22,37 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
+  String _userName = 'Admin'; // Nama pengguna default
+
   late final List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
     _widgetOptions = <Widget>[
-      HomePage(),
+      HomePage(userName: _userName), // Pass the initial name to HomePage
       const Together(),
       const Center(),
       Notifications(),
-      Profile(),
+      Profile(
+          currentName: _userName,
+          updateName:
+              _updateUserName), // Pass the initial name and the update function to Profile
+      AfterMealScreen(),
+      SOSScreen(),
     ];
+  }
+
+  // Fungsi untuk menerima nama baru dari Profile dan memperbaruinya
+  void _updateUserName(String newName) {
+    setState(() {
+      _userName = newName;
+      // Perbarui widget dengan nama yang baru
+      _widgetOptions[0] = HomePage(userName: _userName); // Perbarui HomePage
+      _widgetOptions[4] = Profile(
+          currentName: _userName,
+          updateName: _updateUserName); // Perbarui Profile
+    });
   }
 
   @override
@@ -59,7 +81,7 @@ class _MainNavigationState extends State<MainNavigation> {
             currentIndex: _selectedIndex,
             key: const Key('bottomNavigationBar'),
             backgroundColor: AppColors.white,
-            selectedItemColor: AppColors.baseColor3,
+            selectedItemColor: AppColors.baseColor1,
             unselectedItemColor: AppColors.gray300,
             type: BottomNavigationBarType.fixed,
             selectedLabelStyle: const TextStyle(
@@ -123,7 +145,14 @@ class _MainNavigationState extends State<MainNavigation> {
             height: 70,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: appGradient(),
+              gradient: const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xFF4AC35E), // Warna atas
+                  Color(0xFF5AF469), // Warna bawah
+                ],
+              ),
             ),
             child: FittedBox(
               child: FloatingActionButton(
