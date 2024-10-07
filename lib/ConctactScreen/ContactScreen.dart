@@ -38,10 +38,36 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
   }
 
   void deleteContact(int index) {
-    setState(() {
-      contacts.removeAt(index);
-      filteredContacts = contacts;
-    });
+    // Konfirmasi sebelum menghapus kontak
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Konfirmasi Hapus'),
+        content: const Text('Apakah Anda yakin ingin menghapus kontak ini?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Tutup dialog tanpa menghapus
+            },
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                contacts.removeAt(index); // Hapus kontak
+                filteredContacts = contacts;
+              });
+              Navigator.pop(context); // Tutup dialog setelah menghapus
+            },
+            child: const Text('Hapus'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  Colors.red, // Ganti primary dengan backgroundColor
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   void searchContacts(String query) {
@@ -56,6 +82,48 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
     setState(() {
       filteredContacts = results;
     });
+  }
+
+  void showContactOptions(BuildContext context, int index) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Lihat Informasi'),
+              onTap: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Informasi Kontak'),
+                    content: Text(
+                        'Nama: ${contacts[index]['name']}\nNomor: ${contacts[index]['number']}'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Tutup'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete, color: Colors.red),
+              title: const Text('Hapus Kontak'),
+              onTap: () {
+                Navigator.pop(context);
+                deleteContact(index); // Konfirmasi hapus kontak
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -79,7 +147,7 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
           IconButton(
             icon: const Icon(Icons.more_horiz, color: Colors.black),
             onPressed: () {
-              // Add functionality here
+              // Tambahkan fungsi di sini
             },
           ),
         ],
@@ -181,11 +249,36 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
                       child: ListTile(
                         leading: const Icon(Icons.person,
                             size: 40, color: AppColors.gray600),
-                        title: Text(contact['name']),
-                        subtitle: Text(contact['number']),
+                        title: Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                contact['name'],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.more_vert),
+                              onPressed: () {
+                                showContactOptions(context, index);
+                              },
+                            ),
+                          ],
+                        ),
+                        subtitle: Text(
+                          contact['number'],
+                          style: const TextStyle(
+                            color: AppColors.gray700,
+                            fontSize: 14,
+                          ),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            const SizedBox(width: 10), // Spacing before icons
                             IconButton(
                               icon: const Icon(Icons.call,
                                   color: AppColors.baseColor2),
@@ -199,10 +292,6 @@ class _ContactSettingsScreenState extends State<ContactSettingsScreen> {
                               onPressed: () {
                                 // Message functionality
                               },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => deleteContact(index),
                             ),
                           ],
                         ),

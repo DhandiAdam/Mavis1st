@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io'; // To handle file from gallery
+import 'dart:io'; // Untuk menangani file dari galeri
+import 'package:flutter_blue/flutter_blue.dart'; // Untuk menangani Bluetooth
 
 class Profile extends StatefulWidget {
   final String currentName;
@@ -20,12 +21,52 @@ class _ProfileState extends State<Profile> {
   String _age = '20 Tahun';
   File? _profileImage;
 
+  // Bluetooth-related variables
+  bool _isBluetoothOn = false;
+  FlutterBlue flutterBlue = FlutterBlue.instance;
+  List<BluetoothDevice> _connectedDevices = [];
+  List<ScanResult> _availableDevices = [];
+
   @override
   void initState() {
     super.initState();
     _name = widget.currentName;
+    _checkBluetoothStatus();
+    _getConnectedDevices(); // Ambil perangkat Bluetooth yang terhubung
   }
 
+  // Fungsi untuk memeriksa status Bluetooth
+  Future<void> _checkBluetoothStatus() async {
+    bool isOn = await flutterBlue.isOn;
+    setState(() {
+      _isBluetoothOn = isOn;
+      if (_isBluetoothOn) {
+        _startScan(); // Mulai scan perangkat Bluetooth saat Bluetooth menyala
+      }
+    });
+  }
+
+  // Fungsi untuk mendapatkan perangkat Bluetooth yang tersambung
+  Future<void> _getConnectedDevices() async {
+    List<BluetoothDevice> devices = await flutterBlue.connectedDevices;
+    setState(() {
+      _connectedDevices = devices;
+    });
+  }
+
+  // Fungsi untuk memulai pemindaian perangkat Bluetooth yang tersedia
+  void _startScan() {
+    _availableDevices.clear();
+    flutterBlue.startScan(timeout: const Duration(seconds: 4));
+
+    flutterBlue.scanResults.listen((results) {
+      setState(() {
+        _availableDevices = results;
+      });
+    });
+  }
+
+  // Fungsi untuk menangani image picker
   Future<void> _pickImage() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -36,6 +77,7 @@ class _ProfileState extends State<Profile> {
     }
   }
 
+  // Fungsi untuk membuka dialog edit profil
   void _editProfile() {
     TextEditingController nameController = TextEditingController(text: _name);
     TextEditingController heightController =
@@ -96,6 +138,86 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  // Fungsi untuk menampilkan perangkat Bluetooth di sekitar
+  void _showBluetoothDevices() {
+    if (_isBluetoothOn) {
+      _startScan();
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return ListView(
+            children: [
+              // Daftar Perangkat Terhubung
+              ListTile(
+                title: Text('Perangkat yang Dipasangkan'),
+                subtitle: Text('Perangkat-perangkat yang sudah terhubung'),
+              ),
+              for (var device in _connectedDevices)
+                ListTile(
+                  leading: Icon(Icons.devices),
+                  title: Text(
+                      device.name.isEmpty ? 'Unknown Device' : device.name),
+                  subtitle: Text(device.id.toString()),
+                  trailing: const Icon(Icons.check),
+                  onTap: () {
+                    print('Device ${device.name} tapped');
+                    Navigator.pop(
+                        context); // Tutup dialog setelah memilih perangkat
+                  },
+                ),
+              const Divider(),
+
+              // Daftar Perangkat Tersedia
+              ListTile(
+                title: Text('Perangkat yang Tersedia'),
+                subtitle:
+                    Text('Perangkat Bluetooth di sekitar yang belum terhubung'),
+              ),
+              for (var result in _availableDevices)
+                ListTile(
+                  leading: Icon(Icons.devices_other),
+                  title: Text(result.device.name.isEmpty
+                      ? 'Unknown Device'
+                      : result.device.name),
+                  subtitle: Text(result.device.id.toString()),
+                  onTap: () {
+                    print('Selected device: ${result.device.name}');
+                    // Tambahkan logika untuk menghubungkan perangkat
+                    Navigator.pop(context);
+                  },
+                ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Harap aktifkan Bluetooth terlebih dahulu!')),
+      );
+    }
+  }
+
+  // Fungsi untuk menyalakan atau mematikan Bluetooth
+  Future<void> _toggleBluetooth() async {
+    bool isOn = await flutterBlue.isOn;
+    if (isOn) {
+      // Bluetooth tidak bisa dimatikan secara langsung, harus dari pengaturan
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Matikan Bluetooth dari pengaturan perangkat.'),
+        ),
+      );
+    } else {
+      // Meminta pengguna untuk menghidupkan Bluetooth melalui aplikasi
+      flutterBlue.startScan();
+      setState(() {
+        _isBluetoothOn = true;
+      });
+      _getConnectedDevices();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +242,6 @@ class _ProfileState extends State<Profile> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Profile Picture (Oval)
                     GestureDetector(
                       onTap: _pickImage,
                       child: CircleAvatar(
@@ -132,13 +253,10 @@ class _ProfileState extends State<Profile> {
                                 as ImageProvider,
                       ),
                     ),
-                    const SizedBox(
-                        width: 20), // Adjust spacing between avatar and name
-                    // Name and Edit Button in one Row
+                    const SizedBox(width: 20),
                     Expanded(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment
-                            .spaceBetween, // Align items properly
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
                             _name,
@@ -167,6 +285,67 @@ class _ProfileState extends State<Profile> {
                 ),
               ),
               const SizedBox(height: 24),
+
+              // Bluetooth status dan perangkat
+              Row(
+                children: [
+                  const Text(
+                    "Bluetooth Status: ",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Switch(
+                    value: _isBluetoothOn,
+                    onChanged: (value) {
+                      _toggleBluetooth(); // Menangani aksi menghidupkan/mematikan Bluetooth
+                    },
+                  ),
+                  Text(
+                    _isBluetoothOn ? "Aktif" : "Tidak Aktif",
+                    style: TextStyle(
+                      color: _isBluetoothOn ? Colors.green : Colors.red,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Bagian Perangkat Saya (Smartwatch)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          "Perangkat saya",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed:
+                              _showBluetoothDevices, // Menampilkan perangkat Bluetooth
+                        ),
+                      ],
+                    ),
+                    // Tampilkan daftar perangkat Bluetooth yang terhubung
+                    Column(
+                      children: _connectedDevices.map((device) {
+                        return ListTile(
+                          title: Text(device.name.isEmpty
+                              ? 'Unknown Device'
+                              : device.name),
+                          subtitle: Text(device.id.toString()),
+                          trailing: const Icon(Icons.arrow_forward_ios),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
 
               // Stats (Height, Weight, Age)
               Row(

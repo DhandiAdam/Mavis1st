@@ -52,7 +52,7 @@ class _SOSScreenState extends State<SOSScreen> {
           IconButton(
             icon: const Icon(Icons.more_horiz, color: Colors.black),
             onPressed: () {
-              // Add functionality here
+              // Tambahkan fungsi di sini
             },
           ),
         ],
@@ -62,9 +62,9 @@ class _SOSScreenState extends State<SOSScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            // Tombol Pengaturan Kontak
             ElevatedButton(
               onPressed: () {
-                // Navigasi ke halaman Pengaturan Kontak
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -73,12 +73,12 @@ class _SOSScreenState extends State<SOSScreen> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.transparent, // Background transparan
+                backgroundColor: Colors.white, // Background putih terang
                 padding:
                     const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 shape: RoundedRectangleBorder(
                   side: const BorderSide(
-                    color: AppColors.baseColor2, // Border hijau
+                    color: AppColors.baseColor2, // Border hijau terang
                     width: 2, // Ketebalan border
                   ),
                   borderRadius: BorderRadius.circular(18.0),
@@ -88,6 +88,7 @@ class _SOSScreenState extends State<SOSScreen> {
                 "Pengaturan Kontak",
                 style: TextStyle(
                   fontSize: 16,
+                  color: AppColors.baseColor2, // Warna teks hijau terang
                 ),
               ),
             ),
@@ -98,6 +99,7 @@ class _SOSScreenState extends State<SOSScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
+                  // Outer white glowing effect
                   Container(
                     height: 230, // Outer white outline size
                     width: 230,
@@ -106,48 +108,67 @@ class _SOSScreenState extends State<SOSScreen> {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 10,
+                          color: Colors.green.withOpacity(0.5), // Glow color
+                          spreadRadius: 20,
+                          blurRadius: 30,
+                          offset: const Offset(0, 0), // Shadow direction
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    height: 200,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF4AC35E), // Warna atas ke tengah
-                          Color(0xFF5AF469), // Warna tengah ke bawah
-                        ],
-                        stops: [0.5, 1.0], // Mengatur gradien
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+                  // Inner gradient SOS button
+                  GestureDetector(
+                    onTap: () {
+                      // Toggle status when tapped
+                      setState(() {
+                        sosStatus = sosStatus == "Kamu aman sekarang"
+                            ? "SOS aktif"
+                            : "Kamu aman sekarang";
+                      });
+                    },
+                    child: Container(
+                      height: 200,
+                      width: 200,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF4AC35E), // Warna atas ke tengah
+                            Color(0xFF5AF469), // Warna tengah ke bawah
+                          ],
+                          stops: [0.5, 1.0], // Mengatur gradien
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                        shape: BoxShape.circle,
                       ),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "SOS",
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 40,
-                            fontWeight: FontWeight.bold,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "SOS",
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  offset: const Offset(2, 2),
+                                  blurRadius: 5,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          sosStatus,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: AppColors.white,
+                          const SizedBox(height: 5),
+                          Text(
+                            sosStatus,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: AppColors.white,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
