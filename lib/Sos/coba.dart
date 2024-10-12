@@ -147,6 +147,8 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
                     ),
                   ),
                   const SizedBox(height: 20),
+
+                  // Stack with Countdown Timer and Dashed Circles
                   Stack(
                     alignment: Alignment.center,
                     children: [
@@ -184,7 +186,7 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
                       // Dashed Circles and Contacts Positioned Outside the Countdown
                       CustomPaint(
                         painter: DashedCirclePainter(
-                          numberOfCircles: 2, // Keep two circles for spacing
+                          numberOfCircles: 2, // Increase to 2 circles
                           circleRadius:
                               180, // Set radius larger than the countdown
                         ),
@@ -195,25 +197,20 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
                           child: Stack(
                             alignment: Alignment.center,
                             children: [
+                              // Animated Contacts Positioned Outside the Dashed Circles
                               for (int i = 0; i < emergencyContacts.length; i++)
                                 Positioned(
-                                  top: 220 +
-                                      150 *
-                                          (i % 2 == 0
-                                              ? -1
-                                              : 1), // Posisi atas dan bawah
-                                  left: 170 +
-                                      (i * 50) %
-                                          250, // Sebar di antara kiri ke kanan
+                                  // Adjusting to ensure no overlap with countdown
+                                  top: i % 2 == 0 ? 50 : 270,
+                                  left: (i * 70) +
+                                      60, // Space each contact properly
                                   child: AnimatedBuilder(
                                     animation: _controller,
                                     builder: (context, child) {
-                                      double scaleFactor = 0.98 +
-                                          (_controller.value *
-                                              0.02); // Skala lebih kecil dan halus
+                                      double scaleFactor =
+                                          (i + 1) / emergencyContacts.length;
                                       return Transform.scale(
-                                        scale:
-                                            scaleFactor, // Efek animasi skala lebih kecil
+                                        scale: _controller.value * scaleFactor,
                                         child:
                                             contactWidget(emergencyContacts, i),
                                       );
@@ -237,7 +234,7 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ContactSettingsScreen(),
+                          builder: (context) => const ContactSettingsScreen(),
                         ),
                       );
                     },
@@ -363,32 +360,30 @@ class _SOSScreenState extends State<SOSScreen> with TickerProviderStateMixin {
     );
   }
 
+  // Contact Widget Function
   Widget contactWidget(List<Map<String, dynamic>> contacts, int index) {
-    if (contacts.isEmpty || index >= contacts.length) {
+    if (contacts.isEmpty || index >= contacts.length)
       return Container(); // Handle out-of-bounds
-    }
 
     final contact = contacts[index];
 
     return Column(
       children: [
         CircleAvatar(
-          radius: 15, // Ukuran lebih kecil untuk setiap avatar kontak
+          radius: 50, // Increase size for each contact
           backgroundColor: Colors.white,
           child: Text(
-            contact['name'][0], // Menampilkan huruf pertama dari nama kontak
-            style: TextStyle(
-              fontSize: 16, // Ukuran font disesuaikan
-              color: Colors.black,
-            ),
+            contact['name']
+                [0], // Display the first letter of the contact's name
+            style: TextStyle(fontSize: 28, color: Colors.black),
           ),
         ),
-        const SizedBox(height: 5), // Jarak antara avatar dan nama
+        const SizedBox(height: 5),
         Text(
           contact['name'],
           style: const TextStyle(
-            fontSize: 12, // Ukuran font yang sama untuk nama kontak
-            color: Colors.white,
+            fontSize: 16,
+            color: Colors.black,
           ),
         ),
       ],

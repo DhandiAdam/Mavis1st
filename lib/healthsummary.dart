@@ -36,7 +36,7 @@ class HealthSummaryPage extends StatelessWidget {
               child: ListView(
                 children: [
                   _buildSummaryCard(
-                    title: 'Heart Rate (BPM)',
+                    title: 'Heart Rate (BPMmmmmmmmmmm)',
                     value: heartRate,
                     normalRange: 'Normal: 60-100 BPM',
                   ),

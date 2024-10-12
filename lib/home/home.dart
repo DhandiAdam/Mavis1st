@@ -1,51 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:mavis/profile/profile.dart'; // Pastikan Anda telah membuat halaman Profile sesuai kebutuhan
+import 'package:mavis/profile/profile.dart';
 import 'package:mavis/constants/colors.dart';
 import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:mavis/nutrition/nutrition.dart';
 import 'package:mavis/afterEat/AfterEat.dart';
 import 'package:mavis/Sos/Sos.dart';
+import 'package:mavis/ConctactScreen/ContactScreen.dart';
 
 class HomePage extends StatefulWidget {
-  final String userName; // Definisikan userName
+  final String userName;
 
-  HomePage({required this.userName}); // Tambahkan parameter di konstruktor
+  HomePage({required this.userName});
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late String userName; // Simpan nama pengguna secara lokal di dalam state
+  late String userName;
   final String sleep = '8h 20m';
   final String calories = '760 kCal';
   double heartRate = 78.0;
   List<FlSpot> heartRateSpots = [];
   Timer? _timer;
-  double tick = 0; // Variable to track time
+  double tick = 0;
 
   @override
   void initState() {
     super.initState();
-    userName = widget.userName; // Inisialisasi nama dari widget
+    userName = widget.userName;
+
     // Timer untuk memperbarui heart rate setiap 3 detik
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       setState(() {
         tick += 1;
-        // Mengupdate heart rate setiap 3 detik, dengan batasan 50-150 BPM
-        heartRate = 60 + (20 * (tick % 5)).toDouble();
-        if (heartRate > 150) {
-          heartRate = 150; // Membatasi heart rate tidak lebih dari 150 BPM
+        // Heart rate di-update setiap 3 detik, range 60-180 BPM
+        heartRate = 60 + (tick % 5) * 30; // Menyesuaikan heart rate (60-180)
+
+        // Batasi heart rate maksimal ke 180 BPM
+        if (heartRate > 180) {
+          heartRate = 180;
         }
 
-        // Tambahkan heart rate baru ke dalam spots
+        // Tambahkan data heart rate ke dalam list spots
         heartRateSpots.add(FlSpot(tick, heartRate));
 
-        // Jika sudah mencapai batas X (20), reset dan mulai dari awal
+        // Jika sudah mencapai 20 ticks, reset
         if (tick >= 20) {
-          tick = 0; // Reset tick to restart from the beginning
-          heartRateSpots.clear(); // Clear old data to start fresh
+          tick = 0;
+          heartRateSpots.clear();
         }
       });
     });
@@ -57,27 +61,25 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  // Fungsi untuk membuka halaman profil dan menerima nama yang diperbarui
+  // Fungsi untuk membuka halaman profil
   void _editProfile() async {
     final newName = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Profile(
-          currentName: userName, // Kirim nama saat ini ke halaman profil
+          currentName: userName,
           updateName: (newName) {
-            // Fungsi yang digunakan untuk memperbarui nama di HomePage
             setState(() {
-              userName = newName; // Perbarui nama di halaman home
+              userName = newName;
             });
           },
         ),
       ),
     );
 
-    // Jika nama diperbarui dan dikembalikan
     if (newName != null && newName is String) {
       setState(() {
-        userName = newName; // Perbarui nama di halaman home
+        userName = newName;
       });
     }
   }
@@ -102,11 +104,9 @@ class _HomePageState extends State<HomePage> {
                   color: AppColors.greySmooth,
                 ),
               ),
-              const SizedBox(
-                  height:
-                      9), // Menambahkan jarak antara "Selamat Datang" dan nama
+              const SizedBox(height: 9),
               GestureDetector(
-                onTap: _editProfile, // Buka halaman profil saat nama diklik
+                onTap: _editProfile,
                 child: Text(
                   '$userName!',
                   style: const TextStyle(
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.grey.withOpacity(0.5),
                           spreadRadius: 5,
                           blurRadius: 7,
-                          offset: const Offset(0, 3), // shadow position
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
-                                  color: heartRate > 120
+                                  color: heartRate > 100
                                       ? Colors.red
                                       : Colors.green.shade700,
                                 ),
@@ -214,28 +214,28 @@ class _HomePageState extends State<HomePage> {
                             child: LineChart(
                               LineChartData(
                                 minX: 0,
-                                maxX: 20, // Reset when reaching 20
+                                maxX: 20,
                                 minY: 50,
-                                maxY: 150,
+                                maxY: 180,
                                 lineBarsData: [
                                   LineChartBarData(
                                     spots: heartRateSpots,
                                     isCurved: true,
-                                    colors: heartRate > 120
+                                    colors: heartRate > 100
                                         ? [Colors.red]
                                         : [Colors.green.shade700],
                                     barWidth: 4,
                                     isStrokeCapRound: true,
                                     belowBarData: BarAreaData(
                                       show: true,
-                                      colors: heartRate > 120
+                                      colors: heartRate > 100
                                           ? [Colors.red.withOpacity(0.3)]
                                           : [Colors.green.withOpacity(0.3)],
                                     ),
                                   ),
                                 ],
                                 titlesData: FlTitlesData(
-                                  show: false, // Menyembunyikan labels sumbu
+                                  show: false,
                                 ),
                                 gridData: FlGridData(
                                   show: true,
@@ -268,12 +268,11 @@ class _HomePageState extends State<HomePage> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: heartRate >= 130 ? Colors.red : AppColors.baseColor2,
+                    color: heartRate > 100 ? Colors.red : AppColors.baseColor2,
                   ),
                 ),
               ),
 
-              // Kalori dan Tidur
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -291,7 +290,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
 
-              // Icon bar
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -306,33 +304,35 @@ class _HomePageState extends State<HomePage> {
                     const NutritionPage(),
                   ),
                   _buildServiceButton(
-                      context,
-                      Image.asset(
-                        'assets/icons/Hungry.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                      const AfterMealScreen()),
+                    context,
+                    Image.asset(
+                      'assets/icons/Hungry.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                    const AfterMealScreen(),
+                  ),
                   _buildServiceButton(
-                      context,
-                      Image.asset(
-                        'assets/icons/Goal.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                      const AfterMealScreen()),
+                    context,
+                    Image.asset(
+                      'assets/icons/Goal.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                    const AfterMealScreen(),
+                  ),
                   _buildServiceButton(
-                      context,
-                      Image.asset(
-                        'assets/icons/Pill.png',
-                        width: 40,
-                        height: 40,
-                      ),
-                      const AfterMealScreen()),
+                    context,
+                    Image.asset(
+                      'assets/icons/Pill.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                    const AfterMealScreen(),
+                  ),
                 ],
               ),
-              const SizedBox(
-                  height: 40), // Padding bottom supaya tidak overflow
+              const SizedBox(height: 40),
             ],
           ),
         ),
@@ -412,10 +412,7 @@ class _HomePageState extends State<HomePage> {
           width: 50,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [
-                AppColors.gradientStart,
-                AppColors.gradientEnd
-              ], // Warna gradient
+              colors: [AppColors.gradientStart, AppColors.gradientEnd],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
