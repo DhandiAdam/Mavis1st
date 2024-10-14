@@ -292,46 +292,58 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment:
+                    MainAxisAlignment.center, // Tetap center semua elemen
                 children: [
                   _buildServiceButton(
                     context,
                     Image.asset(
                       'assets/icons/Food.png',
-                      width: 40,
-                      height: 40,
+                      width: 35, // Ukuran ikon tetap
+                      height: 35,
                     ),
+                    "Nutrisi",
                     const NutritionPage(),
                   ),
+                  const SizedBox(
+                      width: 20), // Jarak antar ikon direnggangkan sedikit
                   _buildServiceButton(
                     context,
                     Image.asset(
                       'assets/icons/Hungry.png',
-                      width: 40,
-                      height: 40,
+                      width: 35,
+                      height: 35,
                     ),
+                    "Sesudah Makan",
                     const AfterMealScreen(),
                   ),
+                  const SizedBox(
+                      width: 19), // Jarak antar ikon direnggangkan sedikit
                   _buildServiceButton(
                     context,
                     Image.asset(
                       'assets/icons/Goal.png',
-                      width: 40,
-                      height: 40,
+                      width: 35,
+                      height: 35,
                     ),
+                    "Tantangan",
                     const AfterMealScreen(),
                   ),
+                  const SizedBox(
+                      width: 25), // Jarak antar ikon direnggangkan sedikit
                   _buildServiceButton(
                     context,
                     Image.asset(
                       'assets/icons/Pill.png',
-                      width: 40,
-                      height: 40,
+                      width: 35,
+                      height: 35,
                     ),
+                    "Medikasi",
                     const AfterMealScreen(),
                   ),
                 ],
               ),
+
               const SizedBox(height: 40),
             ],
           ),
@@ -394,35 +406,48 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildServiceButton(BuildContext context, Widget icon, Widget page,
+  Widget _buildServiceButton(
+      BuildContext context, Widget icon, String label, Widget page,
       {Color backgroundColor = AppColors.baseColor3}) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => page),
-          );
-        },
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [AppColors.gradientStart, AppColors.gradientEnd],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+    return Column(
+      children: [
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            },
             borderRadius: BorderRadius.circular(10),
-          ),
-          child: Center(
-            child: icon,
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: icon,
+              ),
+            ),
           ),
         ),
-      ),
+        const SizedBox(height: 2), // Reduce the spacing between icon and label
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12, // Set font size
+            color: Colors.black, // Adjust color as needed
+          ),
+        ),
+      ],
     );
   }
 

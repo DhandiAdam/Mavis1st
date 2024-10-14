@@ -1,9 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // SharedPreferences for local storage
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mavis/constants/colors.dart'; // Import your custom colors
 
 void main() {
   runApp(MaterialApp(
     home: TargetPage(),
+    theme: ThemeData(
+      // Set overall app theme based on your color palette
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(
+          color: Color.fromARGB(210, 250, 250, 250), // Muted white color
+          shadows: [
+            Shadow(
+              offset: Offset(1.0, 1.0),
+              blurRadius: 3.0,
+              color: Color.fromARGB(80, 0, 0, 0), // Subtle shadow effect
+            ),
+          ],
+        ),
+        bodyMedium: TextStyle(
+          color: Color.fromARGB(210, 250, 250, 250), // Muted white color
+          shadows: [
+            Shadow(
+              offset: Offset(1.0, 1.0),
+              blurRadius: 3.0,
+              color: Color.fromARGB(80, 0, 0, 0), // Subtle shadow effect
+            ),
+          ],
+        ),
+        labelLarge: TextStyle(
+          color: Color.fromARGB(210, 250, 250, 250), // Muted white color
+          shadows: [
+            Shadow(
+              offset: Offset(1.0, 1.0),
+              blurRadius: 3.0,
+              color: Color.fromARGB(80, 0, 0, 0), // Subtle shadow effect
+            ),
+          ],
+        ),
+      ),
+    ),
   ));
 }
 
@@ -74,7 +110,23 @@ class _TargetPageState extends State<TargetPage> {
                 Navigator.pop(context);
               }
             },
-            child: Text('Simpan'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white, // White background
+              shadowColor:
+                  Colors.black.withOpacity(0.2), // Subtle shadow effect
+              elevation: 8, // Shadow intensity
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+              ),
+            ),
+            child: Text(
+              'Simpan',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black, // Text color
+              ),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -92,12 +144,12 @@ class _TargetPageState extends State<TargetPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Target saya',
-          style: TextStyle(color: Colors.white),
+          'Target Saya',
+          style: TextStyle(color: AppColors.white),
         ),
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.baseColor1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -105,16 +157,16 @@ class _TargetPageState extends State<TargetPage> {
         centerTitle: true,
       ),
       body: Container(
-        color: Colors.black87,
+        color: AppColors.baseColor1,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
               _buildTargetItem(
                 context,
-                title: 'Target langkah',
+                title: 'Target Langkah',
                 value: stepTarget,
-                onTap: () => _editTarget('Target langkah',
+                onTap: () => _editTarget('Target Langkah',
                     'Masukkan target langkah', _stepController, (newValue) {
                   setState(() {
                     stepTarget = '$newValue langkah';
@@ -123,10 +175,10 @@ class _TargetPageState extends State<TargetPage> {
               ),
               _buildTargetItem(
                 context,
-                title: 'Berat target',
+                title: 'Berat Target',
                 value: weightTarget,
                 onTap: () => _editTarget(
-                    'Berat target', 'Masukkan berat target', _weightController,
+                    'Berat Target', 'Masukkan berat target', _weightController,
                     (newValue) {
                   setState(() {
                     weightTarget = '$newValue kg';
@@ -135,9 +187,9 @@ class _TargetPageState extends State<TargetPage> {
               ),
               _buildTargetItem(
                 context,
-                title: 'Target kalori',
+                title: 'Target Kalori',
                 value: calorieTarget,
-                onTap: () => _editTarget('Target kalori',
+                onTap: () => _editTarget('Target Kalori',
                     'Masukkan target kalori', _calorieController, (newValue) {
                   setState(() {
                     calorieTarget = '$newValue kkal';
@@ -146,10 +198,10 @@ class _TargetPageState extends State<TargetPage> {
               ),
               _buildTargetItem(
                 context,
-                title: 'Target tidur',
+                title: 'Target Tidur',
                 value: sleepTarget,
                 onTap: () => _editTarget(
-                    'Target tidur', 'Masukkan target tidur', _sleepController,
+                    'Target Tidur', 'Masukkan target tidur', _sleepController,
                     (newValue) {
                   setState(() {
                     sleepTarget = '$newValue jam';
@@ -174,7 +226,15 @@ class _TargetPageState extends State<TargetPage> {
         margin: const EdgeInsets.symmetric(vertical: 10),
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         decoration: BoxDecoration(
-          color: Colors.black54,
+          color: Colors.white, // White background
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              spreadRadius: 3,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Row(
@@ -182,7 +242,7 @@ class _TargetPageState extends State<TargetPage> {
           children: [
             Text(
               title,
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              style: const TextStyle(color: Colors.black, fontSize: 16),
             ),
             Row(
               children: [
