@@ -6,6 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:mavis/nutrition/nutrition.dart';
 import 'package:mavis/afterEat/AfterEat.dart';
 import 'package:mavis/Sos/Sos.dart';
+import 'package:mavis/Goals/ChallengePage.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart';
 
 class HomePage extends StatefulWidget {
@@ -318,7 +319,7 @@ class _HomePageState extends State<HomePage> {
                     const AfterMealScreen(),
                   ),
                   const SizedBox(
-                      width: 19), // Jarak antar ikon direnggangkan sedikit
+                      width: 16), // Jarak antar ikon direnggangkan sedikit
                   _buildServiceButton(
                     context,
                     Image.asset(
@@ -327,7 +328,7 @@ class _HomePageState extends State<HomePage> {
                       height: 35,
                     ),
                     "Tantangan",
-                    const AfterMealScreen(),
+                    ChallengePage(),
                   ),
                   const SizedBox(
                       width: 25), // Jarak antar ikon direnggangkan sedikit

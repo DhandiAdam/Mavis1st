@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // Untuk menangani file dari galeri
 import 'package:flutter_blue/flutter_blue.dart'; // Untuk menangani Bluetooth
 import 'package:mavis/Pencapain/pencapaian.dart';
+import 'package:mavis/Goals/ChallengePage.dart';
 
 class Profile extends StatefulWidget {
   final String currentName;

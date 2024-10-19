@@ -11,6 +11,54 @@ class _AfterMealScreenState extends State<AfterMealScreen> {
   double _progress = 0.0; // Nilai progres dari 0 hingga 1
   int _sugarLevel = 0; // Nilai gula darah mulai dari 0 mg/dL
   bool isCompleted = false; // Untuk mengecek apakah progres sudah selesai
+  String activity = ''; // Deskripsi aktivitas terakhir
+  int currentActivity = 0; // Indikator aktivitas saat ini
+
+  // Update status gula darah berdasarkan aktivitas yang selesai
+  void _updateSugarLevel() {
+    setState(() {
+      switch (currentActivity) {
+        case 0:
+          _sugarLevel += 50; // Jalan cepat menurunkan gula darah 50 mg/dL
+          activity = 'Jalan Cepat selama 30 menit';
+          break;
+        case 1:
+          _sugarLevel += 30; // Berlari menurunkan gula darah 30 mg/dL
+          activity = 'Berlari selama 30 menit';
+          break;
+        case 2:
+          _sugarLevel += 20; // Bersepeda sedang menurunkan gula darah 20 mg/dL
+          activity = 'Bersepeda Sedang selama 30 menit';
+          break;
+        case 3:
+          _sugarLevel +=
+              (_sugarLevel * 0.19).round(); // Bersepeda cepat menurunkan 19%
+          activity = 'Bersepeda Cepat selama 60 menit';
+          break;
+        case 4:
+          _sugarLevel += 20; // Aerobik menurunkan gula darah 20 mg/dL
+          activity = 'Aerobik Intensitas Sedang selama 30 menit';
+          break;
+        case 5:
+          _sugarLevel += 30; // Berenang menurunkan gula darah 30 mg/dL
+          activity = 'Berenang selama 30 menit';
+          break;
+        default:
+          break;
+      }
+
+      // Progres bar bertambah setiap kali aktivitas selesai
+      if (_progress < 1.0) {
+        _progress += 0.16; // Setiap aktivitas selesai menambah 1/6 progres
+        currentActivity++; // Beralih ke aktivitas selanjutnya
+      }
+
+      if (_progress >= 1.0) {
+        _progress = 1.0; // Set progres maksimum ke 1
+        isCompleted = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,60 +200,59 @@ class _AfterMealScreenState extends State<AfterMealScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Timeline Gula Darah
-                  Column(
-                    children: [
-                      ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: _progress >= 0.33
-                              ? Colors.blueAccent
-                              : Colors
-                                  .grey.shade400, // Berubah berdasarkan progres
-                          child: const Text(
-                            "01",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        title: const Text("30 menit"),
-                        subtitle: const Text(
-                            "Kadar gula darah akan meningkat seiring dengan penyerapan karbohidrat."),
-                      ),
-                      ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: _progress >= 0.66
-                              ? Colors.blueAccent
-                              : Colors
-                                  .grey.shade400, // Berubah berdasarkan progres
-                          child: const Text(
-                            "02",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        title: const Text("1 jam"),
-                        subtitle: const Text(
-                            "Gula darah Anda bisa mencapai puncaknya sekitar 130 mg/dL."),
-                      ),
-                      ListTile(
-                        leading: CircleAvatar(
-                          radius: 20,
-                          backgroundColor: _progress == 1.0
-                              ? Colors.blueAccent
-                              : Colors
-                                  .grey.shade400, // Berubah berdasarkan progres
-                          child: const Text(
-                            "03",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        title: const Text("2 jam"),
-                        subtitle: const Text(
-                            "Gula darah akan mulai turun kembali ke normal, tergantung sensitivitas insulin tubuh Anda."),
-                      ),
-                    ],
+                  // Aktivitas Olahraga
+                  const Text(
+                    "Aktivitas Olahraga",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
+                  const SizedBox(height: 10),
 
+                  // Aktivitas dengan gambar dan deskripsi
+                  _buildActivityTile(
+                    1,
+                    'Jalan Cepat',
+                    '30 menit',
+                    'assets/icons/Hungry.png',
+                    'Menurunkan kadar gula darah sekitar 50 mg/dL.',
+                  ),
+                  _buildActivityTile(
+                    2,
+                    'Berlari',
+                    '30 menit',
+                    'assets/icons/Hungry.png',
+                    'Menurunkan kadar gula darah sekitar 30 mg/dL.',
+                  ),
+                  _buildActivityTile(
+                    3,
+                    'Bersepeda Sedang',
+                    '30 menit',
+                    'assets/icons/Hungry.png',
+                    'Menurunkan kadar gula darah sekitar 20 mg/dL.',
+                  ),
+                  _buildActivityTile(
+                    4,
+                    'Bersepeda Cepat',
+                    '60 menit',
+                    'assets/icons/Hungry.png',
+                    'Menurunkan gula darah sekitar 19% selama sehari.',
+                  ),
+                  _buildActivityTile(
+                    5,
+                    'Aerobik Intensitas Sedang',
+                    '30 menit',
+                    'assets/icons/Hungry.png',
+                    'Menurunkan kadar gula darah sekitar 20 mg/dL.',
+                  ),
+                  _buildActivityTile(
+                    6,
+                    'Berenang',
+                    '30 menit',
+                    'assets/icons/Hungry.png',
+                    'Membakar 300 kalori, menurunkan gula darah sekitar 30 mg/dL.',
+                  ),
                   const SizedBox(height: 20),
 
                   // Rekomendasi
@@ -218,7 +265,7 @@ class _AfterMealScreenState extends State<AfterMealScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Rekomendasi 1 dengan background biru lembut
+                  // Rekomendasi 1
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
@@ -252,7 +299,7 @@ class _AfterMealScreenState extends State<AfterMealScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Rekomendasi 2 dengan background biru lembut
+                  // Rekomendasi 2
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
@@ -293,25 +340,30 @@ class _AfterMealScreenState extends State<AfterMealScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // Simulasikan progres bertambah dengan menekan tombol
-          setState(() {
-            if (_progress < 1.0) {
-              _progress += 0.33;
-
-              // Update nilai gula darah berdasarkan progres
-              if (_progress == 0.33) {
-                _sugarLevel = 30;
-              } else if (_progress == 0.66) {
-                _sugarLevel = 60;
-              } else if (_progress >= 1.0) {
-                _sugarLevel = 130;
-                _progress = 1.0; // Pastikan progres penuh
-                isCompleted = true;
-              }
-            }
-          });
+          _updateSugarLevel(); // Tidak perlu dialog lagi, langsung perbarui progres
         },
         child: const Icon(Icons.fitness_center),
       ),
+    );
+  }
+
+  // Widget untuk setiap aktivitas olahraga
+  Widget _buildActivityTile(int number, String title, String duration,
+      String imagePath, String description) {
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 20,
+        backgroundColor: _progress >= (number * 0.16)
+            ? Colors.blueAccent
+            : Colors.grey.shade400, // Berubah berdasarkan progres
+        child: Text(
+          "$number",
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+      title: Text("$duration $title"),
+      subtitle: Text(description),
+      trailing: Image.asset(imagePath, width: 40, height: 40),
     );
   }
 }

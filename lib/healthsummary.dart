@@ -1,139 +1,102 @@
 import 'package:flutter/material.dart';
-import 'nutrition/nutrition.dart';
-import 'Scanner/scanner.dart';
 
-class HealthSummaryPage extends StatelessWidget {
-  final String heartRate;
-  final String bloodOxygen;
-  final String bloodGlucose;
-  final String bloodPressure;
-  final String bodyTemperature;
-  final String respiratoryRate;
+class HealthSummaryPage extends StatefulWidget {
+  @override
+  _HealthSummaryPageState createState() => _HealthSummaryPageState();
+}
 
-  const HealthSummaryPage({
-    required this.heartRate,
-    required this.bloodOxygen,
-    required this.bloodGlucose,
-    required this.bloodPressure,
-    required this.bodyTemperature,
-    required this.respiratoryRate,
-    super.key,
-  });
-
+class _HealthSummaryPageState extends State<HealthSummaryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Health Summary'),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        title: const Text(
+          'Perangkat',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
+      body: Column(
+        children: [
+          const SizedBox(height: 20),
+          _buildDeviceCard(
+            context,
+            'assets/icons/Galaxy_Watch4.png', // Sesuaikan path gambar jam tangan
+            'Samsung Galaxy Active2', // Nama perangkat pertama
+            true, // Perangkat menyala
+            68, // Persentase baterai
+          ),
+          const SizedBox(height: 20),
+          _buildDeviceCard(
+            context,
+            'assets/icons/Glaaxy watch Fe.png', // Path gambar jam tangan Apple
+            'Glaaxy watch Fe', // Nama perangkat kedua
+            false, // Perangkat mati
+            0, // Baterai kosong, perangkat mati
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDeviceCard(BuildContext context, String imagePath,
+      String deviceName, bool isOn, int batteryPercentage) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isOn ? Colors.blue.shade50 : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
           children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  _buildSummaryCard(
-                    title: 'Heart Rate (BPMmmmmmmmmmm)',
-                    value: heartRate,
-                    normalRange: 'Normal: 60-100 BPM',
-                  ),
-                  _buildSummaryCard(
-                    title: 'Blood Oxygen (%)',
-                    value: bloodOxygen,
-                    normalRange: 'Normal: 95-100%',
-                  ),
-                  _buildSummaryCard(
-                    title: 'Blood Glucose (mg/dl)',
-                    value: bloodGlucose,
-                    normalRange: 'Normal: 70-140 mg/dl (before meal)',
-                  ),
-                  _buildSummaryCard(
-                    title: 'Blood Pressure (mmHg)',
-                    value: bloodPressure,
-                    normalRange: 'Normal: 90/60 - 120/80 mmHg',
-                  ),
-                  _buildSummaryCard(
-                    title: 'Body Temperature (°C)',
-                    value: bodyTemperature,
-                    normalRange: 'Normal: 36.1°C - 37.2°C',
-                  ),
-                  _buildSummaryCard(
-                    title: 'Respiratory Rate (breath/min)',
-                    value: respiratoryRate,
-                    normalRange: 'Normal: 12-20 breaths/min',
-                  ),
-                ],
-              ),
+            Image.asset(
+              imagePath,
+              width: 60,
+              height: 60,
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            const SizedBox(width: 15),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal, // Background color
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const NutritionPage(
-                            foodItems: [], // Pass an empty list initially or modify as needed
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Go to Nutrition'),
+                Text(
+                  deviceName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange, // Background color
-                      padding: const EdgeInsets.symmetric(vertical: 16.0),
-                      foregroundColor: Colors.white,
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.battery_full,
+                      color: isOn ? Colors.green : Colors.grey,
+                      size: 20,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Scanner(),
-                        ),
-                      );
-                    },
-                    child: const Text('Food Scanner'),
-                  ),
+                    const SizedBox(width: 5),
+                    Text(
+                      isOn ? '$batteryPercentage%' : 'Mati',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isOn ? Colors.black : Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildSummaryCard({
-    required String title,
-    required String value,
-    required String normalRange,
-  }) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      elevation: 5.0, // Added elevation for shadow effect
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(16.0),
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('Value: $value\n$normalRange'),
       ),
     );
   }

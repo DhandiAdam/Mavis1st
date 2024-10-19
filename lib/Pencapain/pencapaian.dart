@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mavis/constants/colors.dart'; // Import your custom colors
+import 'package:mavis/Goals/ChallengePage.dart';
 
 void main() {
   runApp(MaterialApp(

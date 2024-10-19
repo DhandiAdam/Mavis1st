@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mavis/home/home.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mavis/together/together.dart';
+import 'package:mavis/Goals/ChallengePage.dart';
 import 'package:mavis/notifications/notifications.dart';
 import 'package:mavis/profile/profile.dart';
 import 'package:mavis/Scanner/scanner.dart';
@@ -12,6 +12,7 @@ import 'package:mavis/register/register.dart';
 import 'package:mavis/login/login.dart';
 import 'package:mavis/Sos/Sos.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart';
+import '../healthsummary.dart'; // Import healthsummary.dart
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
@@ -31,7 +32,7 @@ class _MainNavigationState extends State<MainNavigation> {
     super.initState();
     _widgetOptions = <Widget>[
       HomePage(userName: _userName), // Pass the initial name to HomePage
-      const Together(),
+      HealthSummaryPage(),
       const Center(),
       Notifications(),
       Profile(
