@@ -308,16 +308,6 @@ class _MedisScreenState extends State<MedisScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.add, color: Colors.white),
-                          onPressed: _addPenyakit,
-                        ),
-                      ),
                     ],
                   ),
                   Container(
@@ -333,12 +323,11 @@ class _MedisScreenState extends State<MedisScreen> {
                                 label: Text(
                                   penyakit,
                                   style: const TextStyle(
-                                    color: Colors
-                                        .white, // Warna teks menjadi putih
+                                    color: Colors.white, // Warna teks putih
                                   ),
                                 ),
                                 backgroundColor:
-                                    Colors.green, // Latar belakang penuh hijau
+                                    Colors.green, // Latar belakang hijau penuh
                                 onDeleted: () {
                                   setState(() {
                                     _riwayatPenyakit.remove(penyakit);
@@ -374,16 +363,6 @@ class _MedisScreenState extends State<MedisScreen> {
                         "Alergi",
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.add, color: Colors.white),
-                          onPressed: _addAlergi,
-                        ),
                       ),
                     ],
                   ),

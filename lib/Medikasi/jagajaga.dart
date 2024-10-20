@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:mavis/TerapiObat/TerapiObat.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart'; // Import ContactScreen
-import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences untuk menyimpan kontak
-import 'dart:convert'; // Import untuk decoding JSON
+import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
+import 'dart:convert'; // Import for decoding JSON
 
 class MedisScreen extends StatefulWidget {
   const MedisScreen({Key? key}) : super(key: key);
@@ -26,14 +26,14 @@ class _MedisScreenState extends State<MedisScreen> {
   bool _showShareDialog = false; // To control share dialog visibility
   bool _showPostView = false; // To control the view post
   String _shareTo = ""; // To track where the document is shared
-
-  List<Map<String, dynamic>> contacts = []; // List untuk menyimpan kontak
+  List<Map<String, dynamic>> contacts =
+      []; // Daftar kontak yang diambil dari SharedPreferences
 
   @override
   void initState() {
     super.initState();
     _generateRandomID();
-    _loadContacts(); // Memuat daftar kontak saat pertama kali screen terbuka
+    _loadContacts(); // Memuat kontak dari SharedPreferences
   }
 
   // Generate random ID
@@ -96,17 +96,15 @@ class _MedisScreenState extends State<MedisScreen> {
     }
   }
 
+  // Fungsi untuk menonaktifkan tombol "Berikutnya"
+  bool _isNextButtonEnabled() {
+    return _riwayatPenyakit.isNotEmpty && _uploadProgress == 1.0;
+  }
+
   // Toggle share dialog visibility
   void _toggleShareDialog() {
     setState(() {
       _showShareDialog = !_showShareDialog;
-    });
-  }
-
-  // Toggle view post visibility
-  void _togglePostView() {
-    setState(() {
-      _showPostView = !_showPostView;
     });
   }
 
@@ -124,17 +122,7 @@ class _MedisScreenState extends State<MedisScreen> {
     });
   }
 
-  // Navigasi ke halaman Terapi Obat
-  void _goToTherapyScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => TherapyScreen(documentID: documentID),
-      ),
-    );
-  }
-
-  // Fungsi untuk memuat daftar kontak dari SharedPreferences
+  // Fungsi untuk memuat kontak dari SharedPreferences
   Future<void> _loadContacts() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? contactsData = prefs.getString('contacts');
@@ -144,6 +132,16 @@ class _MedisScreenState extends State<MedisScreen> {
         contacts = List<Map<String, dynamic>>.from(jsonDecode(contactsData));
       });
     }
+  }
+
+  // Navigasi ke halaman Terapi Obat
+  void _goToTherapyScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => TherapyScreen(documentID: documentID),
+      ),
+    );
   }
 
   // Build share dialog with contacts
@@ -169,16 +167,26 @@ class _MedisScreenState extends State<MedisScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 5),
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Colors.green),
+                        color: Colors.green, // Background hijau
+                        border: Border.all(color: Colors.green), // Border hijau
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(contact['name'],
-                              style: const TextStyle(fontSize: 16)),
-                          Text(contact['number'],
-                              style: const TextStyle(color: Colors.grey)),
+                          Text(
+                            contact['name'],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.white, // Teks putih
+                            ),
+                          ),
+                          Text(
+                            contact['number'],
+                            style: const TextStyle(
+                              color: Colors.white, // Teks putih
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -189,9 +197,16 @@ class _MedisScreenState extends State<MedisScreen> {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text("Tutup"),
+          child: const Text(
+            "Tutup",
+            style: TextStyle(color: Colors.green), // Warna teks hijau
+          ),
         ),
       ],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: const BorderSide(color: Colors.green, width: 2), // Border hijau
+      ),
     );
   }
 
@@ -293,23 +308,37 @@ class _MedisScreenState extends State<MedisScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle, color: Colors.green),
-                        onPressed: _addPenyakit,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.add, color: Colors.white),
+                          onPressed: _addPenyakit,
+                        ),
                       ),
                     ],
                   ),
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: Colors.green, width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Wrap(
                       spacing: 8.0,
                       children: _riwayatPenyakit
                           .map((penyakit) => Chip(
-                                label: Text(penyakit),
+                                label: Text(
+                                  penyakit,
+                                  style: const TextStyle(
+                                    color: Colors
+                                        .white, // Warna teks menjadi putih
+                                  ),
+                                ),
+                                backgroundColor:
+                                    Colors.green, // Latar belakang penuh hijau
                                 onDeleted: () {
                                   setState(() {
                                     _riwayatPenyakit.remove(penyakit);
@@ -319,12 +348,21 @@ class _MedisScreenState extends State<MedisScreen> {
                           .toList(),
                     ),
                   ),
-                  TextField(
-                    controller: _penyakitController,
-                    decoration: const InputDecoration(
-                      hintText: "Tambahkan Riwayat Penyakit...",
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green, width: 2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    onSubmitted: (_) => _addPenyakit(),
+                    child: TextField(
+                      controller: _penyakitController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(8.0),
+                        hintText: "Tambahkan Riwayat Penyakit...",
+                      ),
+                      onSubmitted: (_) => _addPenyakit(),
+                    ),
                   ),
                   const SizedBox(height: 20),
 
@@ -337,23 +375,36 @@ class _MedisScreenState extends State<MedisScreen> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle, color: Colors.green),
-                        onPressed: _addAlergi,
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.add, color: Colors.white),
+                          onPressed: _addAlergi,
+                        ),
                       ),
                     ],
                   ),
                   Container(
                     padding: const EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
+                      border: Border.all(color: Colors.green, width: 2),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Wrap(
                       spacing: 8.0,
                       children: _alergiList
                           .map((alergi) => Chip(
-                                label: Text(alergi),
+                                label: Text(
+                                  alergi,
+                                  style: const TextStyle(
+                                    color: Colors.white, // Warna teks putih
+                                  ),
+                                ),
+                                backgroundColor:
+                                    Colors.green, // Latar belakang hijau penuh
                                 onDeleted: () {
                                   setState(() {
                                     _alergiList.remove(alergi);
@@ -363,12 +414,21 @@ class _MedisScreenState extends State<MedisScreen> {
                           .toList(),
                     ),
                   ),
-                  TextField(
-                    controller: _alergiController,
-                    decoration: const InputDecoration(
-                      hintText: "Tambahkan Alergi...",
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green, width: 2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    onSubmitted: (_) => _addAlergi(),
+                    child: TextField(
+                      controller: _alergiController,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(8.0),
+                        hintText: "Tambahkan Alergi...",
+                      ),
+                      onSubmitted: (_) => _addAlergi(),
+                    ),
                   ),
                   const SizedBox(height: 30),
 
@@ -394,7 +454,6 @@ class _MedisScreenState extends State<MedisScreen> {
                       IconButton(
                         icon: const Icon(Icons.share, color: Colors.green),
                         onPressed: () {
-                          // Menampilkan dialog daftar kontak saat tombol share ditekan
                           showDialog(
                             context: context,
                             builder: (_) => _buildContactsDialog(),
@@ -409,9 +468,12 @@ class _MedisScreenState extends State<MedisScreen> {
                   // Button berikutnya
                   Center(
                     child: ElevatedButton(
-                      onPressed: _goToTherapyScreen, // Navigate to TerapiObat
+                      onPressed: _isNextButtonEnabled()
+                          ? _goToTherapyScreen
+                          : null, // Disable if not ready
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor:
+                            _isNextButtonEnabled() ? Colors.green : Colors.grey,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 100, vertical: 16),
                       ),
@@ -426,72 +488,6 @@ class _MedisScreenState extends State<MedisScreen> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  // Build share dialog
-  Widget _buildShareDialog() {
-    return AlertDialog(
-      title: const Text("Bagikan ID Dokumen"),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text("Apakah Anda yakin ingin membagikan ID ini?"),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.local_hospital, color: Colors.green),
-                onPressed: () => _shareToEntity("Dokter"),
-              ),
-              IconButton(
-                icon: const Icon(Icons.local_pharmacy, color: Colors.green),
-                onPressed: () => _shareToEntity("Farmasi"),
-              ),
-            ],
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => setState(() => _showShareDialog = false),
-          child: const Text("Batal"),
-        ),
-      ],
-    );
-  }
-
-  // Build view post modal
-  Widget _buildViewPostModal() {
-    return Center(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.8,
-        padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: const [
-            BoxShadow(blurRadius: 10, color: Colors.black26, spreadRadius: 5),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text("Dokumen Anda:",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Text("ID Dokumen: $documentID",
-                style: const TextStyle(color: Colors.green)),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _togglePostView,
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              child: const Text("Tutup"),
-            ),
-          ],
-        ),
       ),
     );
   }

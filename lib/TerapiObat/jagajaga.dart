@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mavis/PanduanFoto/Benar.dart';
 
 class TherapyScreen extends StatefulWidget {
   final String documentID;
@@ -210,15 +209,7 @@ class _TherapyScreenState extends State<TherapyScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF34BCAC),
                         ),
-                        onPressed: () {
-                          // Navigasi ke halaman PanduanFotoResepScreen
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const PanduanFotoResepScreen()),
-                          );
-                        },
+                        onPressed: _tanyaApoteker,
                         child: const Text(
                           "Tanya Apoteker(?)",
                           style: TextStyle(color: Colors.white),
@@ -227,7 +218,6 @@ class _TherapyScreenState extends State<TherapyScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 20),
 
                 // Menampilkan obat yang ditambahkan

@@ -9,6 +9,8 @@ import 'package:mavis/Sos/Sos.dart';
 import 'package:mavis/Medikasi/Medikasi.dart';
 import 'package:mavis/Goals/ChallengePage.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart';
+import 'package:mavis/PanduanFoto/Benar.dart';
+import 'package:mavis/PanduanFoto/Salah.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Tambahkan ini untuk SharedPreferences
 
 class HomePage extends StatefulWidget {
