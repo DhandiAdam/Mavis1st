@@ -9,15 +9,18 @@ import 'package:mavis/Sos/Sos.dart';
 import 'package:mavis/Medikasi/Medikasi.dart';
 import 'package:mavis/Goals/ChallengePage.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // Tambahkan ini untuk SharedPreferences
 
 class HomePage extends StatefulWidget {
+  final String userName;
+
+  HomePage({required this.userName});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late String userName = ''; // Inisialisasi dengan nilai kosong
+  late String userName;
   final String sleep = '8h 20m';
   final String calories = '760 kCal';
   double heartRate = 78.0;
@@ -28,7 +31,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _loadUserName(); // Memanggil fungsi untuk memuat nama dari lokal
+    userName = widget.userName;
+
     // Timer untuk memperbarui heart rate setiap 3 detik
     _timer = Timer.periodic(const Duration(seconds: 3), (timer) {
       setState(() {
@@ -53,28 +57,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // Fungsi untuk memuat nama dari SharedPreferences
-  Future<void> _loadUserName() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      userName =
-          prefs.getString('userName') ?? ''; // Default ke kosong jika tidak ada
-    });
-  }
-
-  // Fungsi untuk menyimpan nama ke SharedPreferences
-  Future<void> _saveUserName(String name) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userName', name);
-  }
-
   @override
   void dispose() {
     _timer?.cancel();
     super.dispose();
   }
 
-  // Fungsi untuk membuka halaman profil dan menangkap nama yang diperbarui
+  // Fungsi untuk membuka halaman profil
   void _editProfile() async {
     final newName = await Navigator.push(
       context,
@@ -93,8 +82,6 @@ class _HomePageState extends State<HomePage> {
     if (newName != null && newName is String) {
       setState(() {
         userName = newName;
-        _saveUserName(
-            newName); // Simpan nama yang diperbarui ke SharedPreferences
       });
     }
   }
@@ -123,7 +110,7 @@ class _HomePageState extends State<HomePage> {
               GestureDetector(
                 onTap: _editProfile,
                 child: Text(
-                  '$userName!', // Menampilkan nama pengguna
+                  '$userName!',
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,

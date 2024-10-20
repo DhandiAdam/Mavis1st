@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // Untuk menangani file dari galeri
 import 'package:flutter_blue/flutter_blue.dart'; // Untuk menangani Bluetooth
+import 'package:mavis/Pencapain/pencapaian.dart';
+import 'package:mavis/Goals/ChallengePage.dart';
 
 class Profile extends StatefulWidget {
   final String currentName;
@@ -363,12 +365,18 @@ class _ProfileState extends State<Profile> {
                 _buildListTile(
                     'assets/icons/Icon-Profile.png', "Data Pribadi", () {}),
                 _buildListTile(
-                    'assets/icons/Icon-Achievement.png', "Pencapaian", () {}),
+                    'assets/icons/Icon-Achievement.png', "Pencapaian", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => TargetPage()),
+                  );
+                }),
                 _buildListTile('assets/icons/Icon-Activity.png',
                     "Riwayat Aktivitas", () {}),
                 _buildListTile(
                     'assets/icons/Icon-Workout.png', "Kemajuan Latihan", () {}),
               ]),
+
               const SizedBox(height: 32),
 
               // Notification Section

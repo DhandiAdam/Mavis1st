@@ -10,7 +10,7 @@ class _ChallengePageState extends State<ChallengePage> {
   int? targetSteps; // Target langkah yang diatur pengguna
   int currentSteps = 0; // Langkah saat ini (awalnya 0)
   int points = 0; // Poin yang dihitung berdasarkan langkah
-  int stepIncrement = 1000; // Setiap 1000 langkah = 1 step
+  int stepIncrement = 1500; // Setiap 1000 langkah = 1 step
 
   TextEditingController _stepController = TextEditingController();
 
@@ -155,7 +155,7 @@ class _ChallengePageState extends State<ChallengePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 // Poin hadiah
-                                Flexible(
+                                Expanded(
                                   child: Container(
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
@@ -175,28 +175,33 @@ class _ChallengePageState extends State<ChallengePage> {
                                               width: 38,
                                               height: 38,
                                             ),
-                                            const SizedBox(width: 4),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '$points', // Tampilkan poin yang dihitung
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFF5D5FEF),
+                                            const SizedBox(
+                                                width:
+                                                    8), // Tambahkan spasi lebih besar
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '$points', // Tampilkan poin yang dihitung
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF5D5FEF),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                const Text(
-                                                  'Hadiah',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
+                                                  const SizedBox(height: 2),
+                                                  const Text(
+                                                    'Hadiah',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -204,9 +209,10 @@ class _ChallengePageState extends State<ChallengePage> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
+                                const SizedBox(
+                                    width: 12), // Tambahkan spasi lebih besar
                                 // Langkah kaki
-                                Flexible(
+                                Expanded(
                                   child: Container(
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
@@ -226,28 +232,33 @@ class _ChallengePageState extends State<ChallengePage> {
                                               width: 38,
                                               height: 38,
                                             ),
-                                            const SizedBox(width: 4),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '$totalSteps', // Tampilkan total langkah target
-                                                  style: const TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Color(0xFF5D5FEF),
+                                            const SizedBox(
+                                                width:
+                                                    8), // Tambahkan spasi lebih besar
+                                            Flexible(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '$totalSteps', // Tampilkan total langkah target
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Color(0xFF5D5FEF),
+                                                    ),
                                                   ),
-                                                ),
-                                                const SizedBox(height: 2),
-                                                const Text(
-                                                  'Langkah Kaki',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
+                                                  const SizedBox(height: 2),
+                                                  const Text(
+                                                    'Langkah Kaki',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),

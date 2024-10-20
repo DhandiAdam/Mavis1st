@@ -7,11 +7,10 @@ import 'package:mavis/profile/profile.dart';
 import 'package:mavis/Scanner/scanner.dart';
 import 'package:mavis/constants/colors.dart';
 import 'package:mavis/afterEat/AfterEat.dart';
-import 'package:mavis/styles/style.dart';
-import 'package:mavis/register/register.dart';
-import 'package:mavis/login/login.dart';
 import 'package:mavis/Sos/Sos.dart';
 import 'package:mavis/ConctactScreen/ContactScreen.dart';
+import 'package:mavis/Medikasi/Medikasi.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // Tambahkan ini untuk SharedPreferences
 import '../healthsummary.dart'; // Import healthsummary.dart
 
 class MainNavigation extends StatefulWidget {
@@ -23,15 +22,16 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int _selectedIndex = 0;
-  String _userName = 'Admin'; // Nama pengguna default
+  String _userName = ''; // Default nama pengguna kosong
 
   late final List<Widget> _widgetOptions;
 
   @override
   void initState() {
     super.initState();
+    _loadUserName(); // Memuat nama dari SharedPreferences
     _widgetOptions = <Widget>[
-      HomePage(userName: _userName), // Pass the initial name to HomePage
+      HomePage(), // Pass the initial name to HomePage
       HealthSummaryPage(),
       const Center(),
       Notifications(),
@@ -44,16 +44,31 @@ class _MainNavigationState extends State<MainNavigation> {
     ];
   }
 
-  // Fungsi untuk menerima nama baru dari Profile dan memperbaruinya
-  void _updateUserName(String newName) {
+  // Fungsi untuk memuat nama dari SharedPreferences
+  Future<void> _loadUserName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _userName = prefs.getString('userName') ?? ''; // Memuat nama dari lokal
+      _widgetOptions[0] = HomePage(); // Memperbarui HomePage
+      _widgetOptions[4] = Profile(
+        currentName: _userName,
+        updateName: _updateUserName,
+      ); // Memperbarui Profile dengan nama terbaru
+    });
+  }
+
+  // Fungsi untuk memperbarui nama dari Profile dan menyimpan ke SharedPreferences
+  void _updateUserName(String newName) async {
     setState(() {
       _userName = newName;
-      // Perbarui widget dengan nama yang baru
-      _widgetOptions[0] = HomePage(userName: _userName); // Perbarui HomePage
+      // Memperbarui widget dengan nama yang baru
+      _widgetOptions[0] = HomePage(); // Perbarui HomePage
       _widgetOptions[4] = Profile(
           currentName: _userName,
           updateName: _updateUserName); // Perbarui Profile
     });
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('userName', newName); // Simpan nama ke SharedPreferences
   }
 
   @override

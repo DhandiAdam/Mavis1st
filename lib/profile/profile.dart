@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io'; // Untuk menangani file dari galeri
 import 'package:flutter_blue/flutter_blue.dart'; // Untuk menangani Bluetooth
+import 'package:shared_preferences/shared_preferences.dart'; // Tambahkan ini untuk penyimpanan lokal
 import 'package:mavis/Pencapain/pencapaian.dart';
 import 'package:mavis/Goals/ChallengePage.dart';
 
@@ -17,12 +18,11 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   bool _isNotificationOn = false;
-  late String _name;
+  String _name = ''; // Inisialisasi dengan nilai default, string kosong
   String _height = '180cm';
   String _weight = '60kg';
   String _age = '20 Tahun';
   File? _profileImage;
-
   // Bluetooth-related variables
   bool _isBluetoothOn = false;
   FlutterBlue flutterBlue = FlutterBlue.instance;
@@ -32,9 +32,24 @@ class _ProfileState extends State<Profile> {
   @override
   void initState() {
     super.initState();
-    _name = widget.currentName;
+    _getSavedName(); // Ambil nama yang tersimpan
     _checkBluetoothStatus();
     _getConnectedDevices(); // Ambil perangkat Bluetooth yang terhubung
+  }
+
+  // Fungsi untuk menyimpan nama ke shared_preferences
+  Future<void> _saveName(String name) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('name', name);
+  }
+
+  // Fungsi untuk mendapatkan nama yang tersimpan dari shared_preferences
+  Future<void> _getSavedName() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ??
+          widget.currentName; // Default ke currentName jika tidak ada
+    });
   }
 
   // Fungsi untuk memeriksa status Bluetooth
@@ -130,6 +145,7 @@ class _ProfileState extends State<Profile> {
                   _age = ageController.text;
                 });
                 widget.updateName(_name);
+                _saveName(_name); // Simpan nama ke lokal
                 Navigator.pop(context);
               },
               child: const Text('Simpan'),

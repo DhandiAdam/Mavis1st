@@ -31,6 +31,7 @@ dependencies:
   flutter_blue: ^0.8.0
   flutter:
     sdk: flutter
+  file_picker: ^5.2.4
   url_launcher: ^6.0.9
   fl_chart: 0.36.3
   image_picker: ^1.1.2

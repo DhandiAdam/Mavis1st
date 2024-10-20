@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // Import SharedPreferences
 import 'package:mavis/ConctactScreen/ContactScreen.dart'; // Import ContactScreen
+import 'package:mavis/Medikasi/Medikasi.dart'; // Import ContactScreen
 
 void main() {
   runApp(const MyApp());
